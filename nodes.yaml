@@ -1,0 +1,38 @@
+control_memory: 4096
+compute_memory: 1024
+undercloud_vcpu: 2
+undercloud_disk: 10
+undercloud_memory: 4096
+default_disk: 10
+default_memory: 4096
+
+libvirt_domain_type: kvm
+# Doesn't work with qemu
+#libvirt_domain_type: qemu  
+#libvirt_uri: "qemu:///system"
+
+working_dir: /tmp/qs
+non_root_user: bogdando                                                                                                                     
+local_working_dir: "/home/{{ non_root_user }}"
+image_cache_dir: "{{ working_dir }}"
+libvirt_volume_path: "{{ working_dir }}"
+enable_vnc_console: true
+
+# TODO(bogdando) make a mix of these to use pre-downloaded ones
+#devmode: true
+#release: pike
+#use_external_images: true
+#undercloud_vol_check: false
+#inject_images:                                                                                                                              
+#    - "ironic-python-agent.initramfs"
+#    - "ironic-python-agent.vmlinuz"
+#    - "ironic-python-agent.kernel"
+#    - overcloud-full.qcow2
+#    - overcloud-full.initrd
+#    - overcloud-full.vmlinuz
+
+#overcloud_nodes:
+#  - name: control_0
+#    flavor: control
+#  - name: compute_0
+#    flavor: compute
