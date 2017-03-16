@@ -5,7 +5,7 @@
   roles:
     - libvirt/teardown
     - libvirt/setup/user
-    # - libvirt/setup/overcloud
+    - libvirt/setup/overcloud
     - libvirt/setup/undercloud
 
 - hosts: localhost
