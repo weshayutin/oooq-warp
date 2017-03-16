@@ -13,12 +13,14 @@ libvirt_domain_type: kvm
 
 working_dir: /tmp/qs
 non_root_user: bogdando                                                                                                                     
-local_working_dir: "/home/{{ non_root_user }}"
+local_working_dir: /home/{{ non_root_user }}
 image_cache_dir: "{{ working_dir }}"
 libvirt_volume_path: "{{ working_dir }}"
 enable_vnc_console: true
 
 # TODO(bogdando) make a mix of these to use pre-downloaded ones
+undercloud_image_url: file:///{{ working_dir }}/undercloud.qcow2
+overcloud_image_url: file:///{{ working_dir }}/overcloud-full.tar
 #devmode: true
 #release: pike
 #use_external_images: true
