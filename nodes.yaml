@@ -25,8 +25,8 @@ enable_vnc_console: true
 libvirt_volume_pool: default
 
 # TODO(bogdando) make a mix of these to use pre-downloaded ones
-undercloud_image_url: file:///{{ working_dir }}/undercloud.qcow2
-overcloud_image_url: file:///{{ working_dir }}/overcloud-full.tar
+undercloud_image_url: file:///var/lib/libvirt/images/undercloud.qcow2
+overcloud_image_url: file:////var/lib/libvirt/images/overcloud-full.tar
 #devmode: true
 #release: pike
 #use_external_images: true
