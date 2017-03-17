@@ -18,5 +18,4 @@ set +u
 set -u
 cd /tmp/oooq
 ssh -tt ${USER}@localhost echo gotcha
-/bin/bash
-#create_env_oooq.sh
+create_env_oooq.sh
