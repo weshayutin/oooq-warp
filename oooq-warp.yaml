@@ -6,7 +6,7 @@
     # Fails to restart libvirt in the chrooted container
     #- environment/setup
     - libvirt/teardown
-    - libvirt/setup/user
+    - { role: libvirt/setup/user, become: false }
     - libvirt/setup/overcloud
     - libvirt/setup/undercloud
 
@@ -14,21 +14,21 @@
   any_errors_fatal: true
   gather_facts: true
   roles:
-    - { role: tripleo-inventory }
+    - tripleo-inventory
 
 - name: Install the undercloud
   hosts: undercloud
   any_errors_fatal: true
   gather_facts: no
   roles:
-    - { role: tripleo/undercloud }
+    - tripleo/undercloud
 
-#- name: Post undercloud install steps
-#  hosts: undercloud
-#  any_errors_fatal: true
-#  gather_facts: no
-#  roles:
-#    - { role: tripleo-undercloud-post }
+- name: Post undercloud install steps
+  hosts: undercloud
+  any_errors_fatal: true
+  gather_facts: no
+  roles:
+    - tripleo-undercloud-post
 
 #- name: Deploy the overcloud
 #  hosts: undercloud
@@ -46,7 +46,7 @@
 #      -e environments/docker.yaml
 #      --ntp-server pool.ntp.org
 #  roles:
-#    - overcloud
+#    - tripleo-overcloud
 
 # TODO install undercloud/overcloud with containers
 # (extra_args: -e environments/docker.yaml, containerized_undercloud: true)

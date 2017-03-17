@@ -1,8 +1,6 @@
 #!/bin/bash
 # Wrap OS of the given active user with the centos7 box and oooq
 set -uxe
-# Make an ssh key access test then wrap
-ssh -F /dev/null -i ${USER_KEYFILE} -tt ${USER}@localhost echo gotcha
 docker run -it --rm --privileged \
   --net=host --pid=host --uts=host --ipc=host \
   -e USER=${USER} \
