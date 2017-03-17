@@ -1,5 +1,4 @@
-A warper for OOOQ
-=================
+# A warper for OOOQ
 
 An oooq wrapper (centos7 container) that makes oooq
 thinking it's running at centos, not ubuntu or the like.
@@ -14,7 +13,9 @@ And it omits oooq's shell script. Otherwise, it uses
 the classic ansible way, which is an inventory, a play
 and custom vars to override.
 
-It allows to use pre-downloaded images as well
-(DOES NOT WORK YET).
+## Build the wrapper container
+```
+packer build packer-docker-centos7.json
+```
 
 Details TBD.
