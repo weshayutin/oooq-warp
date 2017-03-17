@@ -10,6 +10,7 @@ docker run -it --rm --privileged \
   -e VIRTUALENVWRAPPER_PYTHON=/usr/bin/python \
   -v /var/lib/libvirt:/var/lib/libvirt \
   -v /run:/run \
+  -v /dev:/dev:ro \
   -v /lib/modules:/lib/modules \
   -v ${WORKSPACE}:/tmp/qs \
   -v ${HOME}/.ssh/authorized_keys:/tmp/authorized_keys:ro \
