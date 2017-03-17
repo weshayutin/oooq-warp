@@ -12,11 +12,16 @@ libvirt_domain_type: kvm
 #libvirt_uri: "qemu:///system"
 
 working_dir: /tmp/qs
-non_root_user: bogdando                                                                                                                     
+non_root_user: bogdando
+ansible_user_id: bogdando
 local_working_dir: /home/{{ non_root_user }}
 image_cache_dir: "{{ working_dir }}"
 libvirt_volume_path: "{{ working_dir }}"
 enable_vnc_console: true
+
+# A hack for oooq to use the default pool instead of the oooq_pool
+# (w/a issue with invisible custom pools unless libvirt restarted)
+libvirt_volume_pool: default
 
 # TODO(bogdando) make a mix of these to use pre-downloaded ones
 undercloud_image_url: file:///{{ working_dir }}/undercloud.qcow2
