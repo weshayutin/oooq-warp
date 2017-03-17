@@ -16,6 +16,7 @@ and custom vars to override.
 ## Build the wrapper container
 ```
 packer build packer-docker-centos7.json
+packer build packer-docker-oooq-runner.json
 ```
 
 Details TBD.
