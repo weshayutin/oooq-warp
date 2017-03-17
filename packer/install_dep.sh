@@ -16,5 +16,9 @@ mkdir -p ~/Envs
 echo 'export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python' >> ${HOME}/.bashrc
 echo '. /usr/bin/virtualenvwrapper.sh' >> ${HOME}/.bashrc
 . $HOME/.bashrc
+. /usr/bin/virtualenvwrapper.sh
+mkvirtualenv oooq
+#workon oooq
+. ${HOME}/Envs/oooq/bin/activate
 cd /tmp/oooq
 pip install --no-cache-dir -r requirements.txt -r quickstart-extras-requirements.txt
