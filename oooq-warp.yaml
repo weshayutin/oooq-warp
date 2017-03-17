@@ -3,6 +3,8 @@
   any_errors_fatal: true
   gather_facts: true
   roles:
+    # Fails to restart libvirt in the chrooted container
+    #- environment/setup
     - libvirt/teardown
     - libvirt/setup/user
     - libvirt/setup/overcloud
