@@ -15,7 +15,7 @@ working_dir: /tmp/qs
 non_root_user: bogdando
 ansible_user_id: bogdando
 local_working_dir: /home/bogdando
-image_cache_dir: /var/lib/libvirt/images
+image_cache_dir: /tmp/qs
 libvirt_volume_path: /var/lib/libvirt/images
 enable_vnc_console: true
 
@@ -25,8 +25,8 @@ enable_vnc_console: true
 libvirt_volume_pool: default
 
 # TODO(bogdando) make a mix of these to use pre-downloaded ones
-undercloud_image_url: file:///var/lib/libvirt/images/undercloud.qcow2
-overcloud_image_url: file:////var/lib/libvirt/images/overcloud-full.tar
+undercloud_image_url: file://{{ image_cache_dir }}/undercloud.qcow2
+overcloud_image_url: file:///{{ image_cache_dir }}/overcloud-full.tar
 #devmode: true
 #release: pike
 #use_external_images: true
