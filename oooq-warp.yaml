@@ -3,8 +3,9 @@
   any_errors_fatal: true
   gather_facts: true
   roles:
-    # Fails to restart libvirt in the chrooted container
-    #- environment/setup
+    # FIXME(bogdando) fails to restart libvirt in the chrooted container
+    # allow the "roles/parts/libvirt/tasks/main.yml" to fail!
+    - environment/setup
     - libvirt/teardown
     - { role: libvirt/setup/user, become: false }
     - libvirt/setup/overcloud
