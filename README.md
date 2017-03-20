@@ -31,12 +31,15 @@ $ packer build packer-docker-oooq-runner.json
   ```
 * Export env vars as you want them, for example:
   ```
+  $ export TEARDOWN=true
   $ export USER=bogdando
   $ export USER_KEYFILE=/tmp/qs/sshkey
   $ export OOOQ_PATH=${HOME}/gitrepos/tripleo-quickstart
   $ export WORKSPACE=/tmp/qs
   # mkdir -p ${WORKSPACE}
   ```
+  Note, setting ``TEARDOWN=false`` speeds up redeploying
+  when failed libvirt/setup stages.
 * Prepare your localhost to serve as oooq's virthost:
   ```
   # cat /dev/urandom | sudo ssh-keygen -b 1024 -t rsa \

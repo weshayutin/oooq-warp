@@ -7,6 +7,7 @@ docker run -it --rm --privileged \
   -e OOOQ_PATH=${OOOQ_PATH} \
   -e HOME=/home/${USER} \
   -e USER_KEYFILE=${USER_KEYFILE} \
+  -e TEARDOWN=${TEARDOWN} \
   -e VIRTUALENVWRAPPER_PYTHON=/usr/bin/python \
   -v /var/lib/libvirt:/var/lib/libvirt \
   -v /run:/run \

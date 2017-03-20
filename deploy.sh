@@ -16,6 +16,7 @@ SSH_OPTIONS="-F /dev/null -i ${ADMIN_KEY}"
 LOG_LEVEL=${LOG_LEVEL:--v}
 ANSIBLE_TIMEOUT=${ANSIBLE_TIMEOUT:-600}
 ANSIBLE_FORKS=${ANSIBLE_FORKS:-10}
+TEARDOWN=${TEARDOWN:-true}
 
 function with_retries {
     local retries=3
@@ -45,6 +46,7 @@ function with_ansible {
         --become-user=root -i ${WORKSPACE}/inventory.ini \
         --forks=$ANSIBLE_FORKS --timeout $ANSIBLE_TIMEOUT \
         -e ansible_ssh_user=${ADMIN_USER} \
+        -e teardown=$TEARDOWN \
         -e @${WORKSPACE}/nodes.yaml \
         $retry_opt $LOG_LEVEL $@; do
             if [ $tries -gt 1 ]; then
@@ -83,6 +85,11 @@ fi
 echo "Checking inventory nodes"
 ansible -u ${ADMIN_USER} -i ${WORKSPACE}/inventory.ini -m ping all
 echo "Deploying with oooq"
+# FIXME(bogdando) hack a failed undercloud respinning
+if [ "${TEARDOWN}" = "false" ]; then
+  sudo virsh destroy undercloud
+  sudo virsh undefine undercloud
+fi
 with_ansible ${WORKSPACE}/oooq-warp.yaml
 #with_ansible playbooks/libvirt-teardown.yml
 #with_ansible playbooks/libvirt-setup.yml
