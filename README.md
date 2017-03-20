@@ -31,11 +31,11 @@ $ packer build packer-docker-oooq-runner.json
   ```
 * Export env vars as you want them, for example:
   ```
-	$ export USER=bogdando
+  $ export USER=bogdando
   $ export USER_KEYFILE=/tmp/qs/sshkey
-	$ export OOOQ_PATH=${HOME}/gitrepos/tripleo-quickstart
-	$ export WORKSPACE=/tmp/qs
-	# mkdir -p ${WORKSPACE}
+  $ export OOOQ_PATH=${HOME}/gitrepos/tripleo-quickstart
+  $ export WORKSPACE=/tmp/qs
+  # mkdir -p ${WORKSPACE}
   ```
 * Prepare your localhost to serve as oooq's virthost:
   ```
@@ -54,5 +54,17 @@ $ packer build packer-docker-oooq-runner.json
   ```
 * Check for overrides in the ``node.yaml``
 
+## Troubleshooting
+
+If the undercloud VM refuses to start (permission deinied), try
+to disable apparmor for libvirt and reconfigure qemu as well:
+```
+# echo "dynamic_ownership = 0" >> /etc/libvirt/qemu.conf
+# echo 'group = "root"' >> /etc/libvirt/qemu.conf
+# echo 'user = "root"' >> /etc/libvirt/qemu.conf
+# echo 'security_driver = "none"' >> /etc/libvirt/qemu.conf
+# sudo systemctl restart libvirt-bin
+# sudo systemctl restart qemu-kvm
+```
 
 Details TBD.
