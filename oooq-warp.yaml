@@ -2,6 +2,7 @@
 - hosts: virthost
   any_errors_fatal: true
   gather_facts: true
+  become: true
   roles:
     # FIXME(bogdando) fails to restart libvirt in the chrooted container
     # allow the "roles/parts/libvirt/tasks/main.yml" to fail!
