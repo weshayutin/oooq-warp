@@ -14,6 +14,9 @@ libvirt_domain_type: kvm
 working_dir: /tmp/qs
 non_root_user: bogdando
 ansible_user_id: bogdando
+undercloud_user: bogdando
+ssh_user: bogdando
+# must be the user's home, otherwise ansible fails to ssh
 local_working_dir: /home/bogdando
 image_cache_dir: /tmp/qs
 libvirt_volume_path: /var/lib/libvirt/images

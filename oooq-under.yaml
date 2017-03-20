@@ -1,24 +1,4 @@
 ---
-- hosts: virthost
-  any_errors_fatal: true
-  gather_facts: true
-  become: true
-  roles:
-    # FIXME(bogdando) fails to restart libvirt in the chrooted container
-    # allow the "roles/parts/libvirt/tasks/main.yml" to fail!
-    - environment/setup
-    - { role: libvirt/teardown, when: teardown|bool }
-    - { role: libvirt/setup/user, become: false }
-    - libvirt/setup/overcloud
-    - libvirt/setup/undercloud
-
-- hosts: virthost
-  any_errors_fatal: true
-  gather_facts: true
-  become: false
-  roles:
-    - { role: tripleo-inventory, tags: undercloud-inventory }
-
 - name: Install the undercloud (oooq-extras)
   hosts: undercloud
   any_errors_fatal: true
@@ -26,7 +6,6 @@
   become: false
   roles:
     - { role: undercloud-deploy, tags: undercloud-deploy }
-
 
 # TODO install undercloud/overcloud with containers
 # (extra_args: -e environments/docker.yaml, containerized_undercloud: true)
@@ -39,4 +18,3 @@
 #      #OR for containers
 #      -e environments/docker.yaml
 #      --ntp-server pool.ntp.org
-
