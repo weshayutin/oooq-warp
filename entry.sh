@@ -18,8 +18,8 @@ set +u
 set -u
 cd /tmp/oooq
 ssh -tt ${USER}@localhost echo gotcha
-echo export PLAY=foo.yaml to deploy a custom PLAY
-echo export TEARDOWN=fale to respin a failed provisioning
+echo export PLAY=oooq-under.yaml to deploy only an undercloud
+echo export TEARDOWN=false to respin a failed provisioning
 echo source /tmp/scripts/ssh_config to setup ssh access
 echo Run create_env_oooq.sh to deploy
 /bin/bash

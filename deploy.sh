@@ -16,6 +16,7 @@ LOG_LEVEL=${LOG_LEVEL:--v}
 ANSIBLE_TIMEOUT=${ANSIBLE_TIMEOUT:-600}
 ANSIBLE_FORKS=${ANSIBLE_FORKS:-10}
 TEARDOWN=${TEARDOWN:-true}
+PLAY=${PLAY:-oooq-warp.yaml}
 
 function with_ansible {
   ANSIBLE_CONFIG=ansible.cfg \
@@ -63,5 +64,5 @@ fi
 . ${WORKSPACE}/ssh_config
 touch $SSH_CONFIG
 ln -sf $HOME $HOME/.quickstart
-with_ansible ${WORKSPACE}/oooq-warp.yaml
+with_ansible ${WORKSPACE}/${PLAY}
 echo "To login undercloud use: ssh -F ~/ssh.config.local.ansible undercloud"
