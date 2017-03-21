@@ -57,6 +57,30 @@ $ packer build packer-docker-oooq-runner.json
   ```
 * Check for overrides in the ``node.yaml``
 
+# Respinning a failed env
+
+If you want to reuse existing customized by oooq images and omit
+all of the long playing oooq provisioning steps:
+* Make sure your ``local_working_dir`` is a persistent host path
+  Otherwise, when the container exited, you loose the updated
+  inventory and ssh keys and must start from the scratch.
+* export ``TEARDOWN=false`` then run ``./oooq-warp.sh``.
+* Or copy those to be persisted from the container, then exit it:
+  ```
+  (oooq) sudo cp ~/hosts /tmp/qs/
+  (oooq) sudo cp ~/id_* /tmp/qs/ 
+  (oooq) sudo cp ~/ssh* /tmp/qs/
+  ```
+  So you could put them back to respin in the new container.
+
+To start from the scratch, overwrite customized images by the original
+(non customized) images you have downloaded before. For example, given
+the ``WORKSPACE=/tmp/qs/``:
+```
+# cp /home/$USER/.quickstart/undercloud.qcow2 /tmp/qs/
+```
+Then export ``TEARDOWN=true`` and run ``./oooq-warp.sh``.
+
 ## Troubleshooting
 
 If the undercloud VM refuses to start (permission deinied), try

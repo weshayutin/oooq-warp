@@ -17,8 +17,6 @@ export SNAPSHOTS_EXTERNAL_DIR=~/.devops/snap
 export DEVOPS_DB_NAME=~/.devops/fuel-devops3
 export DEVOPS_DB_ENGINE=django.db.backends.sqlite3
 export VENV_PATH=${HOME}/.virtualenvs/devops30
-export WORKSPACE=/tmp/scripts
-mkdir -p $WORKSPACE
 echo "Running $ENV_NAME"
 cd /tmp/oooq
 deploy.sh

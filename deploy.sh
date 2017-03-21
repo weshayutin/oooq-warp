@@ -5,7 +5,7 @@
 # must be executed from the oooq root dir
 set -uxe
 
-WORKSPACE=${WORKSPACE:-/tmp/scripts}
+WORKSPACE=/tmp/scripts
 ADMIN_USER=${USER:-admin}
 ADMIN_KEY=${USER_KEYFILE:-${HOME}/.ssh/id_rsa}
 CONF_PATH=${CONF_PATH:-${WORKSPACE}/fuel-devops-oooq.yaml}
@@ -64,3 +64,4 @@ fi
 touch $SSH_CONFIG
 ln -sf $HOME $HOME/.quickstart
 with_ansible ${WORKSPACE}/oooq-warp.yaml
+echo "To login undercloud use: ssh -F ~/ssh.config.local.ansible undercloud"
