@@ -6,7 +6,7 @@
   roles:
     # FIXME(bogdando) fails to restart libvirt in the chrooted container
     # allow the "roles/parts/libvirt/tasks/main.yml" to fail!
-    - environment/setup
+    - { role: environment/setup, when: teardown|bool }
     - { role: libvirt/teardown, when: teardown|bool }
     - { role: libvirt/setup/user, become: false }
     - libvirt/setup/overcloud
