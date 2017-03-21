@@ -18,4 +18,8 @@ set +u
 set -u
 cd /tmp/oooq
 ssh -tt ${USER}@localhost echo gotcha
-create_env_oooq.sh
+/bin/bash
+echo export PLAY=foo.yaml to deploy a custom PLAY
+echo export TEARDOWN=fale to respin a failed provisioning
+echo source /tmp/scripts/ssh_config to setup ssh access
+echo Run create_env_oooq.sh to deploy
