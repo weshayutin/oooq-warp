@@ -1,5 +1,6 @@
 ---
-- hosts: virthost
+- name: Provision tasks
+  hosts: localhost
   any_errors_fatal: true
   gather_facts: true
   become: true
@@ -9,34 +10,13 @@
     - { role: environment/setup, when: teardown|bool }
     - { role: libvirt/teardown, when: teardown|bool }
     - { role: libvirt/setup/user, when: teardown|bool, become: false }
-    - libvirt/setup/overcloud
+    #- libvirt/setup/overcloud
     - libvirt/setup/undercloud
 
-- hosts: virthost
+- name: Generate new inventory
+  hosts: localhost
   any_errors_fatal: true
   gather_facts: true
   become: false
   roles:
     - { role: tripleo-inventory, tags: undercloud-inventory }
-
-- name: Install the undercloud (oooq-extras)
-  hosts: undercloud
-  any_errors_fatal: true
-  gather_facts: no
-  become: false
-  roles:
-    - { role: undercloud-deploy, tags: undercloud-deploy }
-
-
-# TODO install undercloud/overcloud with containers
-# (extra_args: -e environments/docker.yaml, containerized_undercloud: true)
-# see https://review.openstack.org/#/c/419040/ for undercloud
-# Example vars:
-#  vars:
-#    extra_args: >
-#      --control-scale 3
-#      -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml
-#      #OR for containers
-#      -e environments/docker.yaml
-#      --ntp-server pool.ntp.org
-

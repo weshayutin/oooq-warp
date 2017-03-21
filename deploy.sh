@@ -5,9 +5,8 @@
 # must be executed from the oooq root dir
 set -uxe
 
+USER=${USER:-bogdando}
 WORKSPACE=/tmp/scripts
-ADMIN_USER=${USER:-admin}
-ADMIN_KEY=${USER_KEYFILE:-${HOME}/.ssh/id_rsa}
 CONF_PATH=${CONF_PATH:-${WORKSPACE}/fuel-devops-oooq.yaml}
 ENV_NAME=${ENV_NAME:-oooq-warp}
 SLAVES_COUNT=${SLAVES_COUNT:-0}
@@ -16,15 +15,12 @@ LOG_LEVEL=${LOG_LEVEL:--v}
 ANSIBLE_TIMEOUT=${ANSIBLE_TIMEOUT:-600}
 ANSIBLE_FORKS=${ANSIBLE_FORKS:-10}
 TEARDOWN=${TEARDOWN:-true}
-PLAY=${PLAY:-oooq-warp.yaml}
 
 function with_ansible {
   ANSIBLE_CONFIG=ansible.cfg \
   ansible-playbook \
-  -u $ADMIN_USER -b \
-  --become-user=root -i ${WORKSPACE}/inventory.ini \
+  -b --become-user=root \
   --forks=$ANSIBLE_FORKS --timeout $ANSIBLE_TIMEOUT \
-  -e ansible_ssh_user=${ADMIN_USER} \
   -e teardown=$TEARDOWN \
   -e @${WORKSPACE}/nodes.yaml \
    $LOG_LEVEL $@
@@ -43,14 +39,13 @@ if [ $SLAVES_COUNT -gt 0 ]; then
     echo "Created NODES: ${SLAVE_IPS}"
 
     echo "Now update admin/target hosts' IPs in the inventori.ini by manual,"
-    echo "Ensure 'ssh -tt admin_user@admin_host sudo echo gotcha' worked,"
     echo "Customize the oooq-warp.yaml/nodes.yaml to fit your deployment needs,"
     echo "then PRESS ANY KEY to continue with oooq deployment"
     read
 fi
 
 echo "Checking inventory nodes"
-ansible -u ${ADMIN_USER} -i ${WORKSPACE}/inventory.ini -m ping all
+ansible -i ${WORKSPACE}/inventory.ini -m ping all
 echo "Deploying with oooq"
 # FIXME(bogdando) hack a failed undercloud respinning
 if [ "${TEARDOWN}" = "false" ]; then
@@ -60,9 +55,10 @@ if [ "${TEARDOWN}" = "false" ]; then
   set -e
 fi
 
-# hack oooq hardocded paths
-. ${WORKSPACE}/ssh_config
-touch $SSH_CONFIG
 ln -sf $HOME $HOME/.quickstart
-with_ansible ${WORKSPACE}/${PLAY}
+# provision by localhost inventory
+with_ansible -i ${WORKSPACE}/inventory.ini ${WORKSPACE}/oooq-warp.yaml
+# undercloud by provisioned inventory
+ansible -i /home/$USER/hosts -m ping all
+with_ansible -i /home/$USER/hosts ${WORKSPACE}/oooq-under.yaml
 echo "To login undercloud use: ssh -F ~/ssh.config.local.ansible undercloud"

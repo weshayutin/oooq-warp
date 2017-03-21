@@ -48,8 +48,9 @@ undercloud_external_rootfs: true
 #    - overcloud-full.initrd
 #    - overcloud-full.vmlinuz
 
-overcloud_nodes:
-  - name: control_0
-    flavor: control
-  - name: compute_0
-    flavor: compute
+overcloud_nodes: false
+#overcloud_nodes:
+#  - name: control_0
+#    flavor: control
+#  - name: compute_0
+#    flavor: compute

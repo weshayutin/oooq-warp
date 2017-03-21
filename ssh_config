@@ -1,2 +1,4 @@
-export SSH_CONFIG=${SSH_CONFIG=$HOME/ssh.config.ansible}
+set -ue
+export SSH_CONFIG=${SSH_CONFIG=/home/${USER}/ssh.config.local.ansible}
 export ANSIBLE_SSH_ARGS=${ANSIBLE_SSH_ARGS="-F ${SSH_CONFIG}"}
+touch $SSH_CONFIG

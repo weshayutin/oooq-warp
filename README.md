@@ -33,21 +33,12 @@ $ packer build packer-docker-oooq-runner.json
   ```
   $ export TEARDOWN=true
   $ export USER=bogdando
-  $ export USER_KEYFILE=/tmp/qs/sshkey
   $ export OOOQ_PATH=${HOME}/gitrepos/tripleo-quickstart
   $ export WORKSPACE=/tmp/qs
   # mkdir -p ${WORKSPACE}
   ```
   Note, setting ``TEARDOWN=false`` speeds up redeploying
   when failed libvirt/setup stages.
-* Prepare your localhost to serve as oooq's virthost:
-  ```
-  # cat /dev/urandom | sudo ssh-keygen -b 1024 -t rsa \
-  -f "${USER_KEYFILE}" -q -N ""
-  $ ssh-copy-id -i ${USER_KEYFILE} ${USER}@localhost
-  $ ssh -F /dev/null -i ${USER_KEYFILE} \
-    -tt ${USER}@localhost echo gotcha
-  ```
 * Prepare host for nested kvm:
   ```
   # echo "options kvm_intel nested=1" > /etc/modprobe.d/kvm-nested.conf
