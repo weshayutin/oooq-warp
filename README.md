@@ -62,13 +62,14 @@ all of the long playing oooq provisioning steps:
   (oooq) sudo cp ~/id_* /tmp/qs/ 
   (oooq) sudo cp ~/ssh* /tmp/qs/
   ```
-  So you could put them back to respin in the new container.
+  So you could put them back to respin the deploy from the newly
+  started container.
 
 To start from the scratch, overwrite customized images by the original
 (non customized) images you have downloaded before. For example, given
 the ``WORKSPACE=/tmp/qs/``:
 ```
-# cp /home/$USER/.quickstart/undercloud.qcow2 /tmp/qs/
+# cp /home/$USER/.quickstart/undercloud.qcow2* /tmp/qs/
 ```
 Then export ``TEARDOWN=true`` and run ``./oooq-warp.sh``.
 
