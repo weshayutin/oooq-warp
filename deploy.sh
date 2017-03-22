@@ -12,6 +12,7 @@ LOG_LEVEL=${LOG_LEVEL:--v}
 ANSIBLE_TIMEOUT=${ANSIBLE_TIMEOUT:-900}
 ANSIBLE_FORKS=${ANSIBLE_FORKS:-10}
 TEARDOWN=${TEARDOWN:-true}
+SLAVES_COUNT=${SLAVES_COUNT:-0}
 
 function with_ansible {
   ANSIBLE_CONFIG=ansible.cfg \
@@ -62,4 +63,4 @@ with_ansible -i ${inventory} ${WORKSPACE}/oooq-warp.yaml
 [ "${FUEL_DEVOPS}" = "false" ] &&  inventory=/home/$USER/hosts
 ansible -i ${inventory} -m ping all
 with_ansible -i ${inventory} ${WORKSPACE}/oooq-under.yaml
-echo "To login undercloud use: ssh -F ~/ssh.config.local.ansible undercloud"
+echo "To login undercloud use: ssh -F {{ local_working_dir }}/ssh.config.local.ansible undercloud"

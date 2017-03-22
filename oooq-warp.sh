@@ -3,12 +3,12 @@
 set -uxe
 
 DEV=${DEV:-/dev/sda}
-IOPSW=${IOPSW:-25}
-IOPSR=${IOPSR:-35}
-IOW=${IOW:-30mb}
-IOR=${IOR:-50mb}
-CPU=${CPU:-600}
-MEM=${MEM:-3G}
+IOPSW=${IOPSW:-60}
+IOPSR=${IOPSR:-60}
+IOW=${IOW:-35mb}
+IOR=${IOR:-60mb}
+CPU=${CPU:-800}
+MEM=${MEM:-7G}
 
 docker run -it --rm --privileged \
   --device-read-bps=${DEV}:${IOR} \
