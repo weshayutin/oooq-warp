@@ -16,7 +16,7 @@
 - name: Generate new inventory
   hosts: localhost
   any_errors_fatal: true
-  gather_facts: true
+  gather_facts: no
   become: false
   roles:
     - { role: tripleo-inventory, tags: undercloud-inventory }
