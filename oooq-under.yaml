@@ -5,7 +5,7 @@
   gather_facts: no
   become: false
   roles:
-    - { role: undercloud-deploy, tags: undercloud-deploy }
+    - { role: undercloud-deploy, tags: undercloud-deploy, working_dir: /home/stack }
 
 # TODO install undercloud/overcloud with containers
 # (extra_args: -e environments/docker.yaml, containerized_undercloud: true)
