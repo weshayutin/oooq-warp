@@ -56,7 +56,7 @@ $ packer build packer-docker-oooq-runner.json
   # modprobe kvm_intel
   # cat /sys/module/kvm_intel/parameters/nested
   ```
-* Check for overrides in the ``node.yaml``
+* Check for data overrides in the ``custom.yaml``
 * Git checkout the wanted branch of the local OOQ repo. It will be mounted
   into the wrapper container by the given ``OOOQ_PATH``.
 

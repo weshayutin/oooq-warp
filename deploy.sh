@@ -21,7 +21,7 @@ function with_ansible {
   --become-user=root \
   --forks=$ANSIBLE_FORKS --timeout $ANSIBLE_TIMEOUT \
   -e teardown=$TEARDOWN \
-  -e @${WORKSPACE}/nodes.yaml \
+  -e @${WORKSPACE}/custom.yaml \
    $LOG_LEVEL $@
 }
 
@@ -39,7 +39,7 @@ if [ $SLAVES_COUNT -gt 0 -a $"{FUEL_DEVOPS}" != "false" ]; then
 
     echo "Now update undercloud/overcloud hosts' IPs in the inventori.ini"
     echo "by manual or magic scripts (not included)."
-    echo "Customize the nodes.yaml to fit your deployment needs,"
+    echo "Define the custom.yaml to fit your deployment needs,"
     echo "then PRESS ANY KEY to continue with oooq deployment"
     read
 fi
@@ -48,17 +48,26 @@ echo "Checking inventory nodes"
 ansible -i ${WORKSPACE}/inventory.ini -m ping all
 echo "Deploying with oooq"
 inventory=${WORKSPACE}/inventory.ini
+
 # a hack for oooq hardcoded paths
 ln -sf $HOME $HOME/.quickstart
-# provision by localhost inventory
-[ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ] && with_ansible -i ${inventory} ${WORKSPACE}/oooq-warp.yaml
-# Use the provisioned inventory if not fuel-devops provisioned VMs
+
+# provision by localhost inventory and custom work dirs vars for virthost
+if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
+  with_ansible -u ${USER} -i ${inventory} ${WORKSPACE}/oooq-warp.yaml
+fi
+
+# Use the provisioned inventory, if not used fuel-devops for provisioned VMs
 [ "${FUEL_DEVOPS}" = "false" ] &&  inventory=/home/$USER/hosts
-# Check undercloud node connectivity and do your custom PLAY
+
+# Check undercloud node connectivity and deploy
 ansible -i ${inventory} -m ping all
 if [ "${PLAY}" = "oooq-under.yaml" ]; then
-  with_ansible -i ${inventory} ${WORKSPACE}/oooq-under.yaml
-  echo "To login undercloud use: ssh -F {{ local_working_dir }}/ssh.config.local.ansible undercloud"
+  # FIXME:user and work dirs for undercloud doesn't play well with those for virthost
+  with_ansible -i ${inventory} ${WORKSPACE}/oooq-under.yaml \
+    -u stack -e ansible_ssh_user=stack \
+    -e local_working_dir=/home/stack/.quickstart \
+    -e working_dir=/home/stack
 else
   with_ansible -i ${inventory} ${WORKSPACE}/${PLAY}
 fi

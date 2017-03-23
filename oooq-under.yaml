@@ -4,10 +4,6 @@
   any_errors_fatal: true
   gather_facts: no
   become: false
-  vars:
-    step_install_undercloud: true
-    working_dir: /home/stack
-    #local_working_dir: /home/stack/.quickstart
   roles:
     - undercloud-deploy
 

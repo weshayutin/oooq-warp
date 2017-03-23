@@ -11,13 +11,13 @@ libvirt_domain_type: kvm
 #libvirt_domain_type: qemu
 #libvirt_uri: "qemu:///system"
 
-# $WORKSPACE
+# These play well with the virthost only.
+# FIXME the undercloud will be using defaults
+# Is a $WORKSPACE
 working_dir: /tmp/qs
 non_root_user: bogdando
 ansible_user_id: "{{ non_root_user }}"
-undercloud_user: stack
 ssh_user: "{{ undercloud_user }}"
-# must be the user's home, otherwise ansible fails to ssh
 local_working_dir: /home/{{ non_root_user }}
 image_cache_dir: "{{ working_dir }}"
 libvirt_volume_path: /var/lib/libvirt/images
@@ -50,6 +50,8 @@ undercloud_external_rootfs: true
 
 # https://review.openstack.org/#/c/419040
 containerized_undercloud: true
+step_install_undercloud: true
+undercloud_user: stack
 
 overcloud_nodes: false
 #overcloud_nodes:
