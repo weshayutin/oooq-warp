@@ -63,6 +63,9 @@ fi
 # Check undercloud node connectivity and deploy
 ansible -i ${inventory} -m ping all
 if [ "${PLAY}" = "oooq-under.yaml" ]; then
+  # FIXME:tail logs from the undercloud VM as install.sh hides them
+  ssh -F ~/ssh.config.local.ansible undercloud touch /home/stack/undercloud_install.log
+  ssh -F ~/ssh.config.local.ansible undercloud tail -f /home/stack/undercloud_install.log&
   # FIXME:user and work dirs for undercloud doesn't play well with those for virthost
   with_ansible -i ${inventory} ${WORKSPACE}/oooq-under.yaml \
     -u stack -e ansible_ssh_user=stack \
