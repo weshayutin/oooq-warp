@@ -16,6 +16,7 @@ USER=${USER:-bogdando}
 OOOQE_BRANCH=${OOOQE_BRANCH:-master}
 OOOQE_FORK=${OOOQE_FORK:-openstack}
 WORKSPACE=${WORKSPACE:-/tmp/qs}
+PLAY=${PLAY:-oooq-warp.yaml}
 VENV=local
 VMOUNT=""
 [ "${VENV}" != "local" ] && VMOUNT="-v ${VPATH}:/home/${USER}/Envs"
@@ -29,6 +30,7 @@ docker run -it --rm --privileged \
   --memory-swappiness=0 --memory=${MEM} \
   --net=host --pid=host --uts=host --ipc=host \
   -e USER=${USER} \
+  -e PLAY=${PLAY} \
   -e OOOQ_PATH=${OOOQ_PATH} \
   -e HOME=/home/${USER} \
   -e TEARDOWN=${TEARDOWN} \

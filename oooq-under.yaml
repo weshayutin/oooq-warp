@@ -3,12 +3,13 @@
   hosts: undercloud
   any_errors_fatal: true
   gather_facts: no
-  #become: true
+  become: false
+  vars:
+    step_install_undercloud: true
+    working_dir: /home/stack
+    #local_working_dir: /home/stack/.quickstart
   roles:
-    - role: undercloud-deploy
-      tags: undercloud-deploy
-      working_dir: /home/stack
-      local_working_dir: /home/stack/.quickstart
+    - undercloud-deploy
 
 # TODO install undercloud/overcloud with containers
 # (extra_args: -e environments/docker.yaml, containerized_undercloud: true)

@@ -41,21 +41,13 @@ $ packer build packer-docker-oooq-runner.json
   $ export VPATH=${HOME}/.venvs/oooq
   # mkdir -p ${WORKSPACE}
   ```
-Note, setting ``TEARDOWN=false`` speeds up redeploying
-when failed libvirt/setup stages.
-
-By default, the wrapper uses predefined python virtual env named oooq.
-Container build time, upstream dependencies are installed into it.
-If you want to mount in your custom venv, configure as in the example
-above. That env must contain at least oooq and oooq-extras dependencies.
-
-An alternative shortcut for overriding only OOOQ-extras playbooks and roles,
-is to use ``VENV=local`` and override its stock setup by the env vars
-``OOOQE_BRANCH`` and ``OOOQE_FORK``. For the given above example, it would do:
+* Export a custom PLAY name to start with. The default play is
+  is ``oooq-warp.yaml``:
   ```
-  pip install git+https://github.com/johndoe/tripleo-quickstart-extras@dev
+  $ export PLAY=oooq-under.yaml
   ```
-  right into the local oooq venv at the container entry point.
+  Note, setting ``TEARDOWN=false`` speeds up respinning of failed
+  deployments.
 
 * Prepare host for nested kvm:
   ```
@@ -68,22 +60,43 @@ is to use ``VENV=local`` and override its stock setup by the env vars
 * Git checkout the wanted branch of the local OOQ repo. It will be mounted
   into the wrapper container by the given ``OOOQ_PATH``.
 
-# Respinning a failed env
+Normally, the plays to be executed are: the default ``oooq-warp.yaml``
+with either provisioning steps omitted (``TEARDOWN=true``) or not, then
+the ``oooq-under.yaml`` or the given custom ``PLAY``.
+
+## Dev branches and venvs
+
+By default, the wrapper uses predefined python virtual env named oooq.
+Container build time, upstream dependencies are installed into it.
+If you want to mount in your custom venv, configure as in the example
+above. That env must contain at least oooq and oooq-extras dependencies.
+
+An alternative shortcut for overriding only OOOQ-extras playbooks and roles,
+is to use ``VENV=local`` and override its stock setup by the env vars
+``OOOQE_BRANCH`` and ``OOOQE_FORK``. For the given above example, it would do:
+```
+pip install git+https://github.com/johndoe/tripleo-quickstart-extras@dev
+```
+right into the local oooq venv at the container entry point stage.
+
+## Respinning a failed env omitting oooq provisioning steps
 
 If you want to reuse existing customized by oooq images and omit
 all of the long playing oooq provisioning steps:
 * Make sure your ``local_working_dir`` is a persistent host path
   Otherwise, when the container exited, you loose the updated
-  inventory and ssh keys and must start from the scratch.
-* export ``TEARDOWN=false`` then run ``./oooq-warp.sh``.
-* Or copy those to be persisted from the container, then exit it:
+  inventory and ssh keys and may only start from the scratch.
+* Export ``TEARDOWN=false`` then rerun the deploy inside of the
+  container.
+
+  Note, before exitting the wrapper container, copy these files below
+  to be persisted out of the container, and only then exit it:
   ```
   (oooq) sudo cp ~/hosts /tmp/qs/
   (oooq) sudo cp ~/id_* /tmp/qs/
   (oooq) sudo cp ~/ssh* /tmp/qs/
   ```
-  So you could put them back to respin the deploy from the newly
-  started container.
+  So those to be picked up automatically the next time by a fresh container.
 
 To start from the scratch, overwrite customized images by the original
 (non customized) images you have downloaded before. For example, given
@@ -91,7 +104,8 @@ the example above ``WORKSPACE=/tmp/qs/``:
 ```
 # cp /home/$USER/.quickstart/undercloud.qcow2* /tmp/qs/
 ```
-Then export ``TEARDOWN=true`` and run ``./oooq-warp.sh``.
+Then export or unset``TEARDOWN=true``, unset ``PLAY``, exit container,
+run ``./oooq-warp.sh`` and grap some cofee, it won't be ready soon.
 
 ## Troubleshooting
 
@@ -105,5 +119,3 @@ to disable apparmor for libvirt and reconfigure qemu as well:
 # sudo systemctl restart libvirt-bin
 # sudo systemctl restart qemu-kvm
 ```
-
-Details TBD.

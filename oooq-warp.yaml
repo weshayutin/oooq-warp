@@ -5,8 +5,7 @@
   gather_facts: true
   become: true
   roles:
-    # FIXME(bogdando) fails to restart libvirt in the chrooted container
-    # allow the "roles/parts/libvirt/tasks/main.yml" to fail!
+    # https://review.openstack.org/#/c/447000/
     - { role: environment/setup, when: teardown|bool }
     - { role: libvirt/teardown, when: teardown|bool }
     - { role: libvirt/setup/user, when: teardown|bool, become: false }

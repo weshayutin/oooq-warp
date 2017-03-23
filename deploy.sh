@@ -13,11 +13,12 @@ ANSIBLE_TIMEOUT=${ANSIBLE_TIMEOUT:-900}
 ANSIBLE_FORKS=${ANSIBLE_FORKS:-10}
 TEARDOWN=${TEARDOWN:-true}
 SLAVES_COUNT=${SLAVES_COUNT:-0}
+PLAY=${PLAY:-oooq-warp.yaml}
 
 function with_ansible {
   ANSIBLE_CONFIG=ansible.cfg \
   ansible-playbook \
-  -b --become-user=root \
+  --become-user=root \
   --forks=$ANSIBLE_FORKS --timeout $ANSIBLE_TIMEOUT \
   -e teardown=$TEARDOWN \
   -e @${WORKSPACE}/nodes.yaml \
@@ -50,10 +51,14 @@ inventory=${WORKSPACE}/inventory.ini
 # a hack for oooq hardcoded paths
 ln -sf $HOME $HOME/.quickstart
 # provision by localhost inventory
-[ "${TEARDOWN}" = "false" ] || with_ansible -i ${inventory} ${WORKSPACE}/oooq-warp.yaml
-# undercloud by provisioned inventory if not fuel-devops provisioned VMs
+[ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ] && with_ansible -i ${inventory} ${WORKSPACE}/oooq-warp.yaml
+# Use the provisioned inventory if not fuel-devops provisioned VMs
 [ "${FUEL_DEVOPS}" = "false" ] &&  inventory=/home/$USER/hosts
-# Check undercloud node connectivity and deploy
+# Check undercloud node connectivity and do your custom PLAY
 ansible -i ${inventory} -m ping all
-with_ansible -i ${inventory} ${WORKSPACE}/oooq-under.yaml
-echo "To login undercloud use: ssh -F {{ local_working_dir }}/ssh.config.local.ansible undercloud"
+if [ "${PLAY}" = "oooq-under.yaml" ]; then
+  with_ansible -i ${inventory} ${WORKSPACE}/oooq-under.yaml
+  echo "To login undercloud use: ssh -F {{ local_working_dir }}/ssh.config.local.ansible undercloud"
+else
+  with_ansible -i ${inventory} ${WORKSPACE}/${PLAY}
+fi
