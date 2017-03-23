@@ -17,11 +17,11 @@ PLAY=${PLAY:-oooq-warp.yaml}
 
 function snap {
   set +e
-  virsh suspend $1
-  sudo virsh snapshot-delete --name=$2  $1
-  sudo virsh snapshot-create-as --name=2 $1 || sudo virsh snapshot $1
+  sudo virsh suspend $1
+  sudo virsh snapshot-delete $1  $2
+  sudo virsh snapshot-create-as --name=$2 $1 || sudo virsh snapshot $1
   sync
-  virsh resume $1
+  sudo virsh resume $1
 }
 
 function with_ansible {
