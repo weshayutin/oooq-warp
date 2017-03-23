@@ -62,6 +62,8 @@ inventory=${SCRIPTS}/inventory.ini
 if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
   with_ansible -u ${USER} -i ${inventory} ${SCRIPTS}/oooq-warp.yaml
   snap undercloud ready
+  # save state
+  sudo cp -af /home/${USER}/.quickstart/* $WORKSPACE/
 fi
 
 # Use the provisioned inventory, if not used fuel-devops for provisioned VMs
