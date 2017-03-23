@@ -1,6 +1,6 @@
-# A warper for OOOQ
+# A warper for TripleO-QuickStart
 
-An oooq wrapper (centos7 container) that makes oooq
+An OOOQ wrapper (centos7 container) that makes oooq
 thinking it's running at centos, not ubuntu or the like.
 While in fact it operates the host's libvirt and nested
 kvm, if configured. Just like containerized nova-compute
@@ -12,11 +12,22 @@ overcloud VMs instead of oooq (DOES NOT WORK YET).
 It omits oooq's shell scripts and goes the ansible way,
 which is an inventory, a play and custom vars to override.
 
+## Requirements for the host OS
+
+* Packer >= 0.12
+* Docker >= 1.13
+* Libvirt and kvm (latest perhaps) with HW access/nested
+  virtualization enabled
+
+Note, cloud providers may not allow HW enabled kvm. OOOQ
+will not work on QEMU, sorry!
+
 ## Build the wrapper container
 ```
 $ packer build packer-docker-centos7.json
 $ packer build packer-docker-oooq-runner.json
 ```
+Note, adapt those for your case or jut use existing images.
 
 ## Pre-flight checks for a warp jump
 
