@@ -1,3 +1,4 @@
+# TODO move overcloud vars to oooq-over.yaml
 control_memory: 2048
 compute_memory: 1024
 undercloud_vcpu: 2
@@ -39,19 +40,11 @@ overcloud_as_undercloud: false
 # https://review.openstack.org/#/c/447409/
 undercloud_external_rootfs: true
 
-#undercloud_vol_check: false
-#inject_images:
-#    - "ironic-python-agent.initramfs"
-#    - "ironic-python-agent.vmlinuz"
-#    - "ironic-python-agent.kernel"
-#    - overcloud-full.qcow2
-#    - overcloud-full.initrd
-#    - overcloud-full.vmlinuz
-
 # https://review.openstack.org/#/c/419040
 containerized_undercloud: true
 step_install_undercloud: true
 undercloud_user: stack
+undercloud_install_script: undercloud-deploy.sh.j2
 
 overcloud_nodes: false
 #overcloud_nodes:
@@ -59,3 +52,7 @@ overcloud_nodes: false
 #    flavor: control
 #  - name: compute_0
 #    flavor: compute
+
+network_isolation: true
+enable_pacemaker: false
+overcloud_ipv6: false

@@ -18,7 +18,8 @@ PLAY=${PLAY:-oooq-warp.yaml}
 function snap {
   virsh suspend $1
   sudo virsh snapshot-delete --name=$2  $1 || true
-  sudo virsh snapshot-create-as --name=2 $1
+  sudo virsh snapshot-create-as --name=2 $1 || \
+  sudo virsh snapshot $1
   sync
   virsh resume $1
 }

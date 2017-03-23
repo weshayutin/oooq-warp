@@ -67,7 +67,8 @@ Note, adapt those for your case or jut use existing images.
   # modprobe kvm_intel
   # cat /sys/module/kvm_intel/parameters/nested
   ```
-* Check for data overrides in the ``custom.yaml``
+* Copy data vars ``custom.yaml_example`` as ``custom.yaml`` and check for
+  needed data overrides.
 * Git checkout the wanted branch of the local OOQ repo. It will be mounted
   into the wrapper container by the given ``OOOQ_PATH``.
 
