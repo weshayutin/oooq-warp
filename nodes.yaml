@@ -8,7 +8,7 @@ default_memory: 4096
 
 libvirt_domain_type: kvm
 # Doesn't work with qemu
-#libvirt_domain_type: qemu  
+#libvirt_domain_type: qemu
 #libvirt_uri: "qemu:///system"
 
 # $WORKSPACE
@@ -40,13 +40,16 @@ overcloud_as_undercloud: false
 undercloud_external_rootfs: true
 
 #undercloud_vol_check: false
-#inject_images:                                                                                                                              
+#inject_images:
 #    - "ironic-python-agent.initramfs"
 #    - "ironic-python-agent.vmlinuz"
 #    - "ironic-python-agent.kernel"
 #    - overcloud-full.qcow2
 #    - overcloud-full.initrd
 #    - overcloud-full.vmlinuz
+
+# https://review.openstack.org/#/c/419040
+containerized_undercloud: true
 
 overcloud_nodes: false
 #overcloud_nodes:

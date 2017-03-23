@@ -35,10 +35,28 @@ $ packer build packer-docker-oooq-runner.json
   $ export USER=bogdando
   $ export OOOQ_PATH=${HOME}/gitrepos/tripleo-quickstart
   $ export WORKSPACE=/tmp/qs
+  $ export OOOQE_BRANCH=dev
+  $ export OOOQE_FORK=johndoe
+  $ export VENV=hostpath
+  $ export VPATH=${HOME}/.venvs/oooq
   # mkdir -p ${WORKSPACE}
   ```
-  Note, setting ``TEARDOWN=false`` speeds up redeploying
-  when failed libvirt/setup stages.
+Note, setting ``TEARDOWN=false`` speeds up redeploying
+when failed libvirt/setup stages.
+
+By default, the wrapper uses predefined python virtual env named oooq.
+Container build time, upstream dependencies are installed into it.
+If you want to mount in your custom venv, configure as in the example
+above. That env must contain at least oooq and oooq-extras dependencies.
+
+An alternative shortcut for overriding only OOOQ-extras playbooks and roles,
+is to use ``VENV=local`` and override its stock setup by the env vars
+``OOOQE_BRANCH`` and ``OOOQE_FORK``. For the given above example, it would do:
+  ```
+  pip install git+https://github.com/johndoe/tripleo-quickstart-extras@dev
+  ```
+  right into the local oooq venv at the container entry point.
+
 * Prepare host for nested kvm:
   ```
   # echo "options kvm_intel nested=1" > /etc/modprobe.d/kvm-nested.conf
@@ -47,6 +65,8 @@ $ packer build packer-docker-oooq-runner.json
   # cat /sys/module/kvm_intel/parameters/nested
   ```
 * Check for overrides in the ``node.yaml``
+* Git checkout the wanted branch of the local OOQ repo. It will be mounted
+  into the wrapper container by the given ``OOOQ_PATH``.
 
 # Respinning a failed env
 
@@ -59,7 +79,7 @@ all of the long playing oooq provisioning steps:
 * Or copy those to be persisted from the container, then exit it:
   ```
   (oooq) sudo cp ~/hosts /tmp/qs/
-  (oooq) sudo cp ~/id_* /tmp/qs/ 
+  (oooq) sudo cp ~/id_* /tmp/qs/
   (oooq) sudo cp ~/ssh* /tmp/qs/
   ```
   So you could put them back to respin the deploy from the newly
@@ -67,7 +87,7 @@ all of the long playing oooq provisioning steps:
 
 To start from the scratch, overwrite customized images by the original
 (non customized) images you have downloaded before. For example, given
-the ``WORKSPACE=/tmp/qs/``:
+the example above ``WORKSPACE=/tmp/qs/``:
 ```
 # cp /home/$USER/.quickstart/undercloud.qcow2* /tmp/qs/
 ```

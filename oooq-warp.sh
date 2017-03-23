@@ -10,6 +10,16 @@ IOR=${IOR:-60mb}
 CPU=${CPU:-800}
 MEM=${MEM:-7G}
 
+# defaults
+TEARDOWN=${TEARDOWN:-true}
+USER=${USER:-bogdando}
+OOOQE_BRANCH=${OOOQE_BRANCH:-master}
+OOOQE_FORK=${OOOQE_FORK:-openstack}
+WORKSPACE=${WORKSPACE:-/tmp/qs}
+VENV=local
+VMOUNT=""
+[ "${VENV}" != "local" ] && VMOUNT="-v ${VPATH}:/home/${USER}/Envs"
+
 docker run -it --rm --privileged \
   --device-read-bps=${DEV}:${IOR} \
   --device-write-bps=${DEV}:${IOW} \
@@ -23,6 +33,10 @@ docker run -it --rm --privileged \
   -e HOME=/home/${USER} \
   -e TEARDOWN=${TEARDOWN} \
   -e VIRTUALENVWRAPPER_PYTHON=/usr/bin/python \
+  -e VENV=${VENV} \
+  -e OOOQE_BRANCH=${OOOQE_BRANCH} \
+  -e OOOQE_FORK=${OOOQE_FORK} \
+  ${VMOUNT} \
   -v /var/lib/libvirt:/var/lib/libvirt \
   -v /run:/run \
   -v /dev:/dev:ro \

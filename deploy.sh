@@ -46,21 +46,14 @@ fi
 echo "Checking inventory nodes"
 ansible -i ${WORKSPACE}/inventory.ini -m ping all
 echo "Deploying with oooq"
-# FIXME(bogdando) hack a failed undercloud respinning
-if [ "${TEARDOWN}" = "false" ]; then
-  set +e
-  sudo virsh destroy undercloud
-  sudo virsh undefine undercloud
-  set -e
-fi
-
 inventory=${WORKSPACE}/inventory.ini
 # a hack for oooq hardcoded paths
 ln -sf $HOME $HOME/.quickstart
 # provision by localhost inventory
-with_ansible -i ${inventory} ${WORKSPACE}/oooq-warp.yaml
+[ "${TEARDOWN}" = "false" ] || with_ansible -i ${inventory} ${WORKSPACE}/oooq-warp.yaml
 # undercloud by provisioned inventory if not fuel-devops provisioned VMs
 [ "${FUEL_DEVOPS}" = "false" ] &&  inventory=/home/$USER/hosts
+# Check undercloud node connectivity and deploy
 ansible -i ${inventory} -m ping all
 with_ansible -i ${inventory} ${WORKSPACE}/oooq-under.yaml
 echo "To login undercloud use: ssh -F {{ local_working_dir }}/ssh.config.local.ansible undercloud"
