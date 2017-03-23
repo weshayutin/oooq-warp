@@ -7,7 +7,9 @@ OOOQE_FORK=${OOOQE_FORK:-openstack}
 OOOQE_BRANCH=${OOOQE_BRANCH:-master}
 VENV=${VENV:-local}
 PLAY=${PLAY:-oooq-warp.yaml}
-WORKSPACE=${WORKSPACE:-/tmp/qs}
+WORKSPACE=${WORKSPACE:-/opt/oooq}
+IMAGECACHE=${IMAGECACHE:-/opt/cache}
+TEARDOWN=${TEARDOWN:-true}
 
 cd $HOME
 if [ "${VENV}" = "local" ]; then
@@ -30,16 +32,18 @@ fi
 
 # Restore the saved state from the WORKSPACE (ssh keys/setup, inventory)
 # to allow fast respinning omitting provisioning tasks
-for state in 'hosts' 'id_rsa_undercloud' 'id_rsa_virt_power' \
-    'id_rsa_undercloud.pub' 'id_rsa_virt_power.pub' \
-    'ssh.config.ansible' 'ssh.config.local.ansible'; do
-  sudo cp -f "${WORKSPACE}/${state}" "${HOME}"
-done
+if [ "${TEARDOWN}" != "true"  ]; then
+  for state in 'hosts' 'id_rsa_undercloud' 'id_rsa_virt_power' \
+      'id_rsa_undercloud.pub' 'id_rsa_virt_power.pub' \
+      'ssh.config.ansible' 'ssh.config.local.ansible'; do
+    sudo cp -f "${WORKSPACE}/${state}" "${HOME}"
+  done
+  echo To access undercloud run ssh -F ~/ssh.config.local.ansible undercloud
+fi
 
 sudo chown -R ${USER}: ${HOME}
 cd /tmp/oooq
 echo export PLAY=oooq-under.yaml to deploy only an undercloud
 echo export TEARDOWN=false to respin a failed provisioning
 echo Run create_env_oooq.sh to deploy
-echo To access undercloud run ssh -F ~/ssh.config.local.ansible undercloud
 /bin/bash

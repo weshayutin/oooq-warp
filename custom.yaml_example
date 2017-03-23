@@ -7,52 +7,53 @@ undercloud_memory: 4096
 default_disk: 50
 default_memory: 4096
 
-libvirt_domain_type: kvm
-# Doesn't work with qemu
-#libvirt_domain_type: qemu
-#libvirt_uri: "qemu:///system"
+# Accessing virthost=localhost from the wrapper container
+non_root_user: "{{ lookup('env', 'USER') }}"
+non_root_group: "{{ non_root_user }}"
+ansible_user_id: "{{ non_root_user }}"
+# Accessing undercloud VM
+undercloud_user: stack
+ssh_user: "{{ undercloud_user }}"
 
 # These play well with the virthost only.
 # FIXME the undercloud will be using defaults
-# Is a $WORKSPACE
-working_dir: /tmp/qs
-non_root_user: bogdando
-ansible_user_id: "{{ non_root_user }}"
-ssh_user: "{{ undercloud_user }}"
-local_working_dir: /home/{{ non_root_user }}
-image_cache_dir: "{{ working_dir }}"
-libvirt_volume_path: /var/lib/libvirt/images
-enable_vnc_console: true
+working_dir: "{{ lookup('env', 'WORKSPACE') }}"
+image_cache_dir: "{{ lookup('env', 'IMAGECACHE') }}"
+local_working_dir: /home/{{ non_root_user }}/.quickstart
+image_fetch_dir: "{{ working_dir }}"
 
 # A hack for oooq to use the default pool instead of the oooq_pool
 # (w/a issue with invisible custom pools unless libvirt restarted)
 # Note, it recreates the pool with the libvirt_volume_path storage
 libvirt_volume_pool: default
+libvirt_volume_path: /var/lib/libvirt/images
+libvirt_domain_type: kvm
+# Doesn't work with qemu
+#libvirt_domain_type: qemu
+#libvirt_uri: "qemu:///system"
+enable_vnc_console: true
 
-# TODO(bogdando) make a mix of these to use pre-downloaded ones
 undercloud_image_url: file://{{ image_cache_dir }}/undercloud.qcow2
 overcloud_image_url: file:///{{ image_cache_dir }}/overcloud-full.tar
-#devmode: true
-#release: pike
 use_external_images: false
 overcloud_as_undercloud: false
 
 # https://review.openstack.org/#/c/447409/
 undercloud_external_rootfs: true
 
+#devmode: true
+#release: ocata
+
 # https://review.openstack.org/#/c/419040
 containerized_undercloud: true
 step_install_undercloud: true
-undercloud_user: stack
 undercloud_install_script: undercloud-deploy.sh.j2
-
 overcloud_nodes: false
 #overcloud_nodes:
 #  - name: control_0
 #    flavor: control
 #  - name: compute_0
 #    flavor: compute
-
 network_isolation: true
 enable_pacemaker: false
 overcloud_ipv6: false

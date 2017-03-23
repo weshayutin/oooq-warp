@@ -7,7 +7,7 @@ set -uxe
 
 FUEL_DEVOPS=${FUEL_DEVOPS:-false}
 USER=${USER:-bogdando}
-WORKSPACE=/tmp/scripts
+SCRIPTS=/tmp/scripts
 LOG_LEVEL=${LOG_LEVEL:--v}
 ANSIBLE_TIMEOUT=${ANSIBLE_TIMEOUT:-900}
 ANSIBLE_FORKS=${ANSIBLE_FORKS:-10}
@@ -16,10 +16,10 @@ SLAVES_COUNT=${SLAVES_COUNT:-0}
 PLAY=${PLAY:-oooq-warp.yaml}
 
 function snap {
+  set +e
   virsh suspend $1
-  sudo virsh snapshot-delete --name=$2  $1 || true
-  sudo virsh snapshot-create-as --name=2 $1 || \
-  sudo virsh snapshot $1
+  sudo virsh snapshot-delete --name=$2  $1
+  sudo virsh snapshot-create-as --name=2 $1 || sudo virsh snapshot $1
   sync
   virsh resume $1
 }
@@ -30,7 +30,7 @@ function with_ansible {
   --become-user=root \
   --forks=$ANSIBLE_FORKS --timeout $ANSIBLE_TIMEOUT \
   -e teardown=$TEARDOWN \
-  -e @${WORKSPACE}/custom.yaml \
+  -e @${SCRIPTS}/custom.yaml \
    $LOG_LEVEL $@
 }
 
@@ -54,16 +54,13 @@ if [ $SLAVES_COUNT -gt 0 -a $"{FUEL_DEVOPS}" != "false" ]; then
 fi
 
 echo "Checking inventory nodes"
-ansible -i ${WORKSPACE}/inventory.ini -m ping all
+ansible -i ${SCRIPTS}/inventory.ini -m ping all
 echo "Deploying with oooq"
-inventory=${WORKSPACE}/inventory.ini
-
-# a hack for oooq hardcoded paths
-ln -sf $HOME $HOME/.quickstart
+inventory=${SCRIPTS}/inventory.ini
 
 # provision by localhost inventory and custom work dirs vars for virthost
 if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
-  with_ansible -u ${USER} -i ${inventory} ${WORKSPACE}/oooq-warp.yaml
+  with_ansible -u ${USER} -i ${inventory} ${SCRIPTS}/oooq-warp.yaml
   snap undercloud ready
 fi
 
@@ -77,11 +74,11 @@ if [ "${PLAY}" = "oooq-under.yaml" ]; then
   ssh -F ~/ssh.config.local.ansible undercloud touch /home/stack/undercloud_install.log
   ssh -F ~/ssh.config.local.ansible undercloud tail -f /home/stack/undercloud_install.log&
   # FIXME:user and work dirs for undercloud doesn't play well with those for virthost
-  with_ansible -i ${inventory} ${WORKSPACE}/oooq-under.yaml \
+  with_ansible -i ${inventory} ${SCRIPTS}/oooq-under.yaml \
     -u stack -e ansible_ssh_user=stack \
     -e local_working_dir=/home/stack/.quickstart \
     -e working_dir=/home/stack
   snap undercloud deployed
 else
-  with_ansible -i ${inventory} ${WORKSPACE}/${PLAY}
+  with_ansible -i ${inventory} ${SCRIPTS}/${PLAY}
 fi

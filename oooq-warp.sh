@@ -31,6 +31,8 @@ docker run -it --rm --privileged \
   --net=host --pid=host --uts=host --ipc=host \
   -e USER=${USER} \
   -e PLAY=${PLAY} \
+  -e WORKSPACE=${WORKSPACE} \
+  -e IMAGECACHE=${IMAGECACHE} \
   -e OOOQ_PATH=${OOOQ_PATH} \
   -e HOME=/home/${USER} \
   -e TEARDOWN=${TEARDOWN} \
@@ -43,7 +45,8 @@ docker run -it --rm --privileged \
   -v /run:/run \
   -v /dev:/dev:ro \
   -v /lib/modules:/lib/modules \
-  -v ${WORKSPACE}:/tmp/qs \
+  -v ${WORKSPACE}:${WORKSPACE} \
+  -v ${IMAGECACHE}:${IMAGECACHE} \
   -v ${OOOQ_PATH}:/tmp/oooq:ro \
   -v $(pwd):/tmp/scripts:ro \
   -u 1000 \

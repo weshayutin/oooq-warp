@@ -31,21 +31,13 @@ Note, adapt those for your case or jut use existing images.
 
 ## Pre-flight checks for a warp jump
 
-* Download overcloud/undercloud images and md5 (hereafter
-  assume the work dir is /tmp/qs)
-* Extract initrd and vmlinuz (does not work from the
-  wrapping oooq-runner container):
-  ```
-  # virt-copy-out -a /tmp/qs/undercloud.qcow2 \
-    /home/stack/overcloud-full.vmlinuz \
-    /home/stack/overcloud-full.initrd /tmp/qs
-  ```
+* Download overcloud/undercloud images and md5 into the ``IMAGECACHE``
 * Export env vars as you want them, for example:
   ```
-  $ export TEARDOWN=true
   $ export USER=bogdando
   $ export OOOQ_PATH=${HOME}/gitrepos/tripleo-quickstart
-  $ export WORKSPACE=/tmp/qs
+  $ export WORKSPACE=/opt/oooq
+  $ export IMAGECACHE=/opt/cache
   $ export OOOQE_BRANCH=dev
   $ export OOOQE_FORK=johndoe
   $ export VENV=hostpath
@@ -59,7 +51,13 @@ Note, adapt those for your case or jut use existing images.
   ```
   Note, setting ``TEARDOWN=false`` speeds up respinning of failed
   deployments.
-
+* Extract initrd and vmlinuz (does not work from the
+  wrapping oooq-runner container):
+  ```
+  # virt-copy-out -a ${IMAGECACHE}/undercloud.qcow2 \
+    /home/stack/overcloud-full.vmlinuz \
+    /home/stack/overcloud-full.initrd ${WORKSPACE}
+  ```
 * Prepare host for nested kvm:
   ```
   # echo "options kvm_intel nested=1" > /etc/modprobe.d/kvm-nested.conf
@@ -104,20 +102,15 @@ all of the long playing oooq provisioning steps:
   Note, before exitting the wrapper container, copy these files below
   to be persisted out of the container, and only then exit it:
   ```
-  (oooq) sudo cp ~/hosts /tmp/qs/
-  (oooq) sudo cp ~/id_* /tmp/qs/
-  (oooq) sudo cp ~/ssh* /tmp/qs/
+  (oooq) sudo cp ~/hosts ${WORKSPACE}
+  (oooq) sudo cp ~/id_* ${WORKSPACE}
+  (oooq) sudo cp ~/ssh* ${WORKSPACE}
   ```
   So those to be picked up automatically the next time by a fresh container.
 
-To start from the scratch, overwrite customized images by the original
-(non customized) images you have downloaded before. For example, given
-the example above ``WORKSPACE=/tmp/qs/``:
-```
-# cp /home/$USER/.quickstart/undercloud.qcow2* /tmp/qs/
-```
-Then export or unset``TEARDOWN=true``, unset ``PLAY``, exit container,
-run ``./oooq-warp.sh`` and grap some cofee, it won't be ready soon.
+To start from the scratch, remove existing VMs' snapshots, export or
+unset``TEARDOWN=true``, unset ``PLAY``, exit container and re-run
+``./oooq-warp.sh`` and grap some cofee, it won't be ready soon.
 
 ## Troubleshooting
 
