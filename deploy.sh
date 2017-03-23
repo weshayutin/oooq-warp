@@ -15,6 +15,14 @@ TEARDOWN=${TEARDOWN:-true}
 SLAVES_COUNT=${SLAVES_COUNT:-0}
 PLAY=${PLAY:-oooq-warp.yaml}
 
+function snap {
+  virsh suspend $1
+  sudo virsh snapshot-delete --name=$2  $1 || true
+  sudo virsh snapshot-create-as --name=2 $1
+  sync
+  virsh resume $1
+}
+
 function with_ansible {
   ANSIBLE_CONFIG=ansible.cfg \
   ansible-playbook \
@@ -55,6 +63,7 @@ ln -sf $HOME $HOME/.quickstart
 # provision by localhost inventory and custom work dirs vars for virthost
 if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
   with_ansible -u ${USER} -i ${inventory} ${WORKSPACE}/oooq-warp.yaml
+  snap undercloud ready
 fi
 
 # Use the provisioned inventory, if not used fuel-devops for provisioned VMs
@@ -71,6 +80,7 @@ if [ "${PLAY}" = "oooq-under.yaml" ]; then
     -u stack -e ansible_ssh_user=stack \
     -e local_working_dir=/home/stack/.quickstart \
     -e working_dir=/home/stack
+  snap undercloud deployed
 else
   with_ansible -i ${inventory} ${WORKSPACE}/${PLAY}
 fi
