@@ -47,8 +47,10 @@ undercloud_external_rootfs: true
 # THT
 #overcloud_templates_repo: https://github.com/johndoe/tripleo-heat-templates
 #overcloud_templates_branch: dev
+#overcloud_templates_path: /home/stack
 #undercloud_templates_repo: https://github.com/johndoes/tripleo-heat-templates
 #undercloud_templates_branch: superdev
+#undercloud_templates_path: /home/stack
 
 # https://review.openstack.org/#/c/419040
 containerized_undercloud: true

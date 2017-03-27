@@ -90,6 +90,21 @@ pip install git+https://github.com/johndoe/tripleo-quickstart-extras@dev
 ```
 right into the local oooq venv at the container entry point stage.
 
+
+For the rest of components, like t-h-t, puppet modules, heat-agent,
+define a custom repo/branch/refspec:
+```
+overcloud_templates_repo: https://github.com/johndoe/tripleo-heat-templates
+overcloud_templates_branch: dev
+undercloud_templates_repo: https://github.com/johndoes/tripleo-heat-templates
+undercloud_templates_branch: superdev
+undercloud_install_script: undercloud-deploy-dev.sh.j2
+```
+Then create the custom ``undercloud-deploy-dev.sh.j2`` script.
+Inside, make sure to checkout/install required dev branches of components under
+dev/test. Then define a composable role (a heat environemnt) for the undercloud
+for the given script as well. For overcloud custom roles, see OOOQ docs.
+
 ## Respinning a failed env omitting oooq provisioning steps
 
 If you want to reuse existing customized by oooq images and omit

@@ -2,7 +2,7 @@
 - name: Install the undercloud (oooq-extras)
   hosts: undercloud
   any_errors_fatal: true
-  gather_facts: no
+  gather_facts: true
   become: false
   roles:
     - undercloud-deploy
