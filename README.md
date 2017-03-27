@@ -38,6 +38,7 @@ Note, adapt those for your case or jut use existing images.
   $ export OOOQ_PATH=${HOME}/gitrepos/tripleo-quickstart
   $ export WORKSPACE=/opt/oooq
   $ export IMAGECACHE=/opt/cache
+  $ export LWD=/home/{USER}/.quickstart
   $ export OOOQE_BRANCH=dev
   $ export OOOQE_FORK=johndoe
   $ export VENV=hostpath

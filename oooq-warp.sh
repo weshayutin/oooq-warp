@@ -16,6 +16,7 @@ USER=${USER:-bogdando}
 OOOQE_BRANCH=${OOOQE_BRANCH:-master}
 OOOQE_FORK=${OOOQE_FORK:-openstack}
 WORKSPACE=${WORKSPACE:-/tmp/qs}
+LWD=${LWD:-/home/${USER}/.quickstart}
 PLAY=${PLAY:-oooq-warp.yaml}
 VENV=local
 VMOUNT=""
@@ -32,6 +33,7 @@ docker run -it --rm --privileged \
   -e USER=${USER} \
   -e PLAY=${PLAY} \
   -e WORKSPACE=${WORKSPACE} \
+  -e LWD=${LWD} \
   -e IMAGECACHE=${IMAGECACHE} \
   -e OOOQ_PATH=${OOOQ_PATH} \
   -e HOME=/home/${USER} \

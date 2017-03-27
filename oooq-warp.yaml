@@ -15,7 +15,8 @@
 - name: Generate new inventory
   hosts: localhost
   any_errors_fatal: true
-  gather_facts: no
+  # update ansible_user_dir from root, for ssh setup
+  gather_facts: true
   become: false
   roles:
     - { role: tripleo-inventory, tags: undercloud-inventory }

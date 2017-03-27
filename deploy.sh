@@ -14,6 +14,8 @@ ANSIBLE_FORKS=${ANSIBLE_FORKS:-10}
 TEARDOWN=${TEARDOWN:-true}
 SLAVES_COUNT=${SLAVES_COUNT:-0}
 PLAY=${PLAY:-oooq-warp.yaml}
+WORKSPACE=${WORKSPACE:-/opt/oooq}
+LWD=${LWD:-${HOME}/.quickstart}
 
 function snap {
   set +e
@@ -63,24 +65,24 @@ if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
   with_ansible -u ${USER} -i ${inventory} ${SCRIPTS}/oooq-warp.yaml
   snap undercloud ready
   # save state
-  sudo cp -af /home/${USER}/.quickstart/* $WORKSPACE/
+  sudo cp -af ${LWD}/* ${WORKSPACE}/
 fi
 
 # Use the provisioned inventory, if not used fuel-devops for provisioned VMs
-[ "${FUEL_DEVOPS}" = "false" ] &&  inventory=/home/$USER/hosts
+[ "${FUEL_DEVOPS}" = "false" ] &&  inventory=${LWD}/hosts
 
 # Check undercloud node connectivity and deploy
 ansible -i ${inventory} -m ping all
 if [ "${PLAY}" = "oooq-under.yaml" ]; then
   # FIXME:tail logs from the undercloud VM as install.sh hides them
-  ssh -F ~/ssh.config.local.ansible undercloud touch /home/stack/undercloud_install.log
-  ssh -F ~/ssh.config.local.ansible undercloud tail -f /home/stack/undercloud_install.log&
+  ssh -F ${LWD}/ssh.config.local.ansible undercloud touch /home/stack/undercloud_install.log
+  ssh -F ${LWD}/ssh.config.local.ansible undercloud tail -f /home/stack/undercloud_install.log&
   # FIXME:user and work dirs for undercloud doesn't play well with those for virthost
   with_ansible -i ${inventory} ${SCRIPTS}/oooq-under.yaml \
     -u stack -e ansible_ssh_user=stack \
     -e local_working_dir=/home/stack/.quickstart \
     -e working_dir=/home/stack
   snap undercloud deployed
-else
+elif [ "${PLAY}" != "oooq-warp.yaml" ]; then
   with_ansible -i ${inventory} ${SCRIPTS}/${PLAY}
 fi

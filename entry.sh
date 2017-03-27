@@ -8,6 +8,7 @@ OOOQE_BRANCH=${OOOQE_BRANCH:-master}
 VENV=${VENV:-local}
 PLAY=${PLAY:-oooq-warp.yaml}
 WORKSPACE=${WORKSPACE:-/opt/oooq}
+LWD=${LWD:-~/.quickstart}
 IMAGECACHE=${IMAGECACHE:-/opt/cache}
 TEARDOWN=${TEARDOWN:-true}
 
@@ -33,12 +34,13 @@ fi
 # Restore the saved state from the WORKSPACE (ssh keys/setup, inventory)
 # to allow fast respinning omitting provisioning tasks
 if [ "${TEARDOWN}" != "true"  ]; then
+  mkdir -p ${LWD}
   for state in 'hosts' 'id_rsa_undercloud' 'id_rsa_virt_power' \
       'id_rsa_undercloud.pub' 'id_rsa_virt_power.pub' \
       'ssh.config.ansible' 'ssh.config.local.ansible'; do
-    sudo cp -f "${WORKSPACE}/${state}" "${HOME}"
+    sudo cp -f "${WORKSPACE}/${state}" ${LWD}/
   done
-  echo To access undercloud run ssh -F ~/ssh.config.local.ansible undercloud
+  echo "To access undercloud run ssh -F ${LWD}/ssh.config.local.ansible undercloud"
 fi
 
 sudo chown -R ${USER}: ${HOME}

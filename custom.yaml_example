@@ -19,7 +19,7 @@ ssh_user: "{{ undercloud_user }}"
 # FIXME the undercloud will be using defaults
 working_dir: "{{ lookup('env', 'WORKSPACE') }}"
 image_cache_dir: "{{ lookup('env', 'IMAGECACHE') }}"
-local_working_dir: /home/{{ non_root_user }}/.quickstart
+local_working_dir: "{{ lookup('env', 'LWD') }}"
 image_fetch_dir: "{{ working_dir }}"
 
 # A hack for oooq to use the default pool instead of the oooq_pool
