@@ -41,8 +41,12 @@ overcloud_as_undercloud: false
 # https://review.openstack.org/#/c/447409/
 undercloud_external_rootfs: true
 
+# dev branches
 #devmode: true
 #release: ocata
+# THT
+#overcloud_templates_repo: https://github.com/johndoe/tripleo-heat-templates
+#overcloud_templates_branch: dev
 
 # https://review.openstack.org/#/c/419040
 containerized_undercloud: true
