@@ -77,6 +77,7 @@ fi
 
 # FIXME: rework stack as undercloud_user env var
 function finalize {
+  set +e
   with_undercloud_root \
     "cp -nu /root/stackrc /home/stack/ && chown stack /home/stack/stackrc"
   with_undercloud_root \
@@ -96,10 +97,10 @@ ansible -i ${inventory} -m ping all
 if [ "${PLAY}" = "oooq-under.yaml" ]; then
   # FIXME:tail logs from the undercloud VM as install.sh hides them
   ssh -F ${LWD}/ssh.config.local.ansible undercloud touch /home/stack/undercloud_install.log
-  ssh -F ${LWD}/ssh.config.local.ansible undercloud tail -f /home/stack/undercloud_install.log&
+  ssh -F ${LWD}/ssh.config.local.ansible undercloud tail -fn1 /home/stack/undercloud_install.log&
   # FIXME:user and work dirs for undercloud doesn't play well with those for virthost
   with_ansible -i ${inventory} ${SCRIPTS}/oooq-under.yaml \
-    -u stack -e ansible_ssh_user=stack \
+    -u stack -e ansible_user=stack \
     -e local_working_dir=/home/stack/.quickstart \
     -e working_dir=/home/stack
   snap undercloud deployed

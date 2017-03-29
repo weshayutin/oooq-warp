@@ -41,6 +41,9 @@ overcloud_as_undercloud: false
 # https://review.openstack.org/#/c/447409/
 undercloud_external_rootfs: true
 
+# https://review.openstack.org/#/c/447000/
+chrooted: true
+
 # dev branches
 # Delorian repos
 #devmode: true
