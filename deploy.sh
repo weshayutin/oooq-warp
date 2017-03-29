@@ -36,6 +36,10 @@ function with_ansible {
    $LOG_LEVEL $@
 }
 
+function with_undercloud_root {
+  ssh -F ${LWD}/ssh.config.local.ansible undercloud-root $@
+}
+
 echo "Trying to ensure bridge-nf-call-iptables is disabled..."
 br_netfilter=$(cat /proc/sys/net/bridge/bridge-nf-call-iptables)
 if [ "$br_netfilter" = "1" ]; then
@@ -73,9 +77,16 @@ fi
 
 # FIXME: rework stack as undercloud_user env var
 function finalize {
-  set +e
-  ssh -F ${LWD}/ssh.config.local.ansible undercloud-root \
+  with_undercloud_root \
     "cp -nu /root/stackrc /home/stack/ && chown stack /home/stack/stackrc"
+  with_undercloud_root \
+    "which fuel-log-parse || \
+    curl https://raw.githubusercontent.com/bogdando/fuel-log-parse/master/fuel-log-parse.sh >|\
+    /usr/local/sbin/fuel-log-parse && chmod +x /usr/local/sbin/fuel-log-parse"
+  echo "######## Captured errors: ########"
+  with_undercloud_root \
+    "cd /home/stack; fuel-log-parse -g -x WARN; cd /var/log; \
+    fuel-log-parse -g -rfc3164; fuel-log-parse -g"
 }
 
 trap finalize EXIT
