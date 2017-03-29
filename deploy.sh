@@ -71,6 +71,15 @@ fi
 # Use the provisioned inventory, if not used fuel-devops for provisioned VMs
 [ "${FUEL_DEVOPS}" = "false" ] &&  inventory=${LWD}/hosts
 
+# FIXME: rework stack as undercloud_user env var
+function finalize {
+  set +e
+  ssh -F ${LWD}/ssh.config.local.ansible undercloud-root \
+    "cp -nu /root/stackrc /home/stack/ && chown stack /home/stack/stackrc"
+}
+
+trap finalize EXIT
+
 # Check undercloud node connectivity and deploy
 ansible -i ${inventory} -m ping all
 if [ "${PLAY}" = "oooq-under.yaml" ]; then
