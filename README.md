@@ -27,7 +27,8 @@ will not work on QEMU, sorry!
 $ packer build packer-docker-centos7.json
 $ packer build packer-docker-oooq-runner.json
 ```
-Note, adapt those for your case or jut use existing images.
+Note, adapt those for your case or jut use existing images. It also requires
+``OOOQ_PATH`` set, see below.
 
 ## Pre-flight checks for a warp jump
 
