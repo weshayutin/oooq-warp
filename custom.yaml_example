@@ -39,7 +39,9 @@ use_external_images: false
 overcloud_as_undercloud: false
 
 # https://review.openstack.org/#/c/447409/
-undercloud_external_rootfs: true
+undercloud_use_custom_boot_images: true
+undercloud_custom_initrd: "{{ image_cache_dir }}/overcloud-full.initrd"
+undercloud_custom_vmlinuz: "{{ image_cache_dir }}/overcloud-full.vmlinuz"
 
 # https://review.openstack.org/#/c/447000/
 chrooted: true
@@ -58,6 +60,9 @@ upgrade_delorean_hash: current-passed-ci
 #undercloud_templates_repo: https://github.com/johndoes/tripleo-heat-templates
 #undercloud_templates_branch: superdev
 #undercloud_templates_path: /home/stack
+
+# https://review.openstack.org/#/c/452275
+undercloud_docker_registry_mirror: http://mirror.regionone.tripleo-test-cloud-rh1.openstack.org:8081/registry-1.docker
 
 # https://review.openstack.org/#/c/419040
 containerized_undercloud: true
