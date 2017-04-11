@@ -86,8 +86,8 @@ function finalize {
     /usr/local/sbin/fuel-log-parse && chmod +x /usr/local/sbin/fuel-log-parse"
   echo "######## Captured errors: ########"
   with_undercloud_root \
-    "cd /home/stack; fuel-log-parse -g -x WARN; cd /var/log; \
-    fuel-log-parse -g -rfc3164; fuel-log-parse -g"
+    "cd /var/log; fuel-log-parse -g -rfc3164; fuel-log-parse -g; \
+    cd /home/stack; fuel-log-parse -g -x WARN;"
 }
 
 trap finalize EXIT
