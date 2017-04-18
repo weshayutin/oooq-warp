@@ -21,6 +21,7 @@ PLAY=${PLAY:-oooq-warp.yaml}
 VENV=local
 VMOUNT=""
 [ "${VENV}" != "local" ] && VMOUNT="-v ${VPATH}:/home/${USER}/Envs"
+MAKE_SNAPSHOTS=${MAKE_SNAPSHOTS:-true}
 
 docker run -it --rm --privileged \
   --device-read-bps=${DEV}:${IOR} \
@@ -42,6 +43,7 @@ docker run -it --rm --privileged \
   -e VENV=${VENV} \
   -e OOOQE_BRANCH=${OOOQE_BRANCH} \
   -e OOOQE_FORK=${OOOQE_FORK} \
+  -e MAKE_SNAPSHOTS=${MAKE_SNAPSHOTS} \
   ${VMOUNT} \
   -v /var/lib/libvirt:/var/lib/libvirt \
   -v /run:/run \

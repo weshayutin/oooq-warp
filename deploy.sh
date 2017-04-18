@@ -13,6 +13,7 @@ TEARDOWN=${TEARDOWN:-true}
 PLAY=${PLAY:-oooq-warp.yaml}
 WORKSPACE=${WORKSPACE:-/opt/oooq}
 LWD=${LWD:-${HOME}/.quickstart}
+MAKE_SNAPSHOTS=${MAKE_SNAPSHOTS:-true}
 
 function snap {
   set +e
@@ -51,7 +52,7 @@ inventory=${SCRIPTS}/inventory.ini
 # provision by localhost inventory and custom work dirs vars for virthost
 if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
   with_ansible -u ${USER} -i ${inventory} ${SCRIPTS}/oooq-warp.yaml
-  snap undercloud ready
+  [ "${MAKE_SNAPSHOTS}" = "true" ] && snap undercloud ready
   # save state
   sudo cp -af ${LWD}/* ${WORKSPACE}/
 fi
@@ -84,7 +85,7 @@ if [ "${PLAY}" = "oooq-under.yaml" ]; then
     -u stack -e ansible_user=stack \
     -e local_working_dir=/home/stack/.quickstart \
     -e working_dir=/home/stack
-  snap undercloud deployed
+  [ "${MAKE_SNAPSHOTS}" = "true" ] && snap undercloud deployed
 elif [ "${PLAY}" != "oooq-warp.yaml" ]; then
   with_ansible -i ${inventory} ${SCRIPTS}/${PLAY}
 fi
