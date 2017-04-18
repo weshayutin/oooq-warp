@@ -22,6 +22,7 @@ function snap {
   sudo virsh snapshot-create-as --name=$2 $1 || sudo virsh snapshot $1
   sync
   sudo virsh resume $1
+  set -e
 }
 
 function with_ansible {
@@ -70,6 +71,7 @@ function finalize {
   with_undercloud_root \
     "cd /var/log; fuel-log-parse -g -rfc3164; fuel-log-parse -g; \
     cd /home/stack; fuel-log-parse -g -x WARN;"
+  set -e
 }
 
 trap finalize EXIT
