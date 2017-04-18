@@ -1,18 +1,15 @@
 #!/bin/bash
 # Wrap oooq with ansible
-# It may as well prepare VMs by fuel-devops
 # requires ansible in the given venv or host
 # must be executed from the oooq root dir
 set -uxe
 
-FUEL_DEVOPS=${FUEL_DEVOPS:-false}
 USER=${USER:-bogdando}
 SCRIPTS=/tmp/scripts
 LOG_LEVEL=${LOG_LEVEL:--v}
 ANSIBLE_TIMEOUT=${ANSIBLE_TIMEOUT:-900}
 ANSIBLE_FORKS=${ANSIBLE_FORKS:-10}
 TEARDOWN=${TEARDOWN:-true}
-SLAVES_COUNT=${SLAVES_COUNT:-0}
 PLAY=${PLAY:-oooq-warp.yaml}
 WORKSPACE=${WORKSPACE:-/opt/oooq}
 LWD=${LWD:-${HOME}/.quickstart}
@@ -46,19 +43,6 @@ if [ "$br_netfilter" = "1" ]; then
     sudo sh -c 'echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables'
 fi
 
-if [ $SLAVES_COUNT -gt 0 -a $"{FUEL_DEVOPS}" != "false" ]; then
-    echo "Creating VMs with fuel-devops"
-    ENV_NAME=${ENV_NAME} SLAVES_COUNT=${SLAVES_COUNT} IMAGE_PATH=${IMAGE_PATH} CONF_PATH=${CONF_PATH} env.py create_env
-    SLAVE_IPS=($(ENV_NAME=${ENV_NAME} env.py get_slaves_ips | tr -d "[],'"))
-    echo "Created NODES: ${SLAVE_IPS}"
-
-    echo "Now update undercloud/overcloud hosts' IPs in the inventori.ini"
-    echo "by manual or magic scripts (not included)."
-    echo "Define the custom.yaml to fit your deployment needs,"
-    echo "then PRESS ANY KEY to continue with oooq deployment"
-    read
-fi
-
 echo "Checking inventory nodes"
 ansible -i ${SCRIPTS}/inventory.ini -m ping all
 echo "Deploying with oooq"
@@ -71,9 +55,6 @@ if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
   # save state
   sudo cp -af ${LWD}/* ${WORKSPACE}/
 fi
-
-# Use the provisioned inventory, if not used fuel-devops for provisioned VMs
-[ "${FUEL_DEVOPS}" = "false" ] &&  inventory=${LWD}/hosts
 
 # FIXME: rework stack as undercloud_user env var
 function finalize {

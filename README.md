@@ -6,9 +6,6 @@ While in fact it operates the host's libvirt and nested
 kvm, if configured. Just like containerized nova-compute
 would do.
 
-It can also use fuel-devops to pre-create undercloud or
-overcloud VMs instead of oooq (DOES NOT WORK YET).
-
 It omits oooq's shell scripts and goes the ansible way,
 which is an inventory, a play and custom vars to override.
 
@@ -122,15 +119,6 @@ all of the long playing oooq provisioning steps:
   inventory and ssh keys and may only start from the scratch.
 * Export ``TEARDOWN=false`` then rerun the deploy inside of the
   container.
-
-  Note, before exitting the wrapper container, copy these files below
-  to be persisted out of the container, and only then exit it:
-  ```
-  (oooq) sudo cp ~/hosts ${WORKSPACE}
-  (oooq) sudo cp ~/id_* ${WORKSPACE}
-  (oooq) sudo cp ~/ssh* ${WORKSPACE}
-  ```
-  So those to be picked up automatically the next time by a fresh container.
 
 To start from the scratch, remove existing VMs' snapshots, export or
 unset``TEARDOWN=true``, unset ``PLAY``, exit container and re-run

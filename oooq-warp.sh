@@ -55,5 +55,4 @@ docker run -it --rm --privileged \
   --entrypoint /bin/bash \
   --name runner bogdando/oooq-runner:0.1 \
   -c "sudo cp /tmp/scripts/*.sh /usr/local/sbin/ && \
-      sudo cp /tmp/scripts/*.py /usr/local/sbin/ && \
       sudo chmod +x /usr/local/sbin/* && entry.sh"
