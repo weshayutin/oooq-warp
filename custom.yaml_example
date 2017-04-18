@@ -53,6 +53,11 @@ chrooted: true
 # https://review.openstack.org/#/c/450792/
 target_upgrade_version: master
 upgrade_delorean_hash: current-passed-ci
+undercloud_dlrn_repo: current-tripleo
+undercloud_update_packages:
+  - openstack-tripleo-common
+  - puppet-tripleo
+  - python-tripleoclient
 # THT
 #overcloud_templates_repo: https://github.com/johndoe/tripleo-heat-templates
 #overcloud_templates_branch: dev
@@ -60,6 +65,8 @@ upgrade_delorean_hash: current-passed-ci
 #undercloud_templates_repo: https://github.com/johndoes/tripleo-heat-templates
 #undercloud_templates_branch: superdev
 #undercloud_templates_path: /home/stack
+undercloud_extra_args:
+  - -e {{undercloud_templates_path}}/environments/docker-mini.yaml
 
 # https://review.openstack.org/#/c/452275
 undercloud_docker_registry_mirror: http://mirror.regionone.tripleo-test-cloud-rh1.openstack.org:8081/registry-1.docker
