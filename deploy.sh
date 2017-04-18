@@ -58,6 +58,9 @@ if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
   sudo cp -af ${LWD}/* ${WORKSPACE}/
 fi
 
+# switch to the generated inventory
+inventory=${LWD}/hosts
+
 # FIXME: rework stack as undercloud_user env var
 function finalize {
   set +e
