@@ -31,10 +31,10 @@ Note, adapt those for your case or jut use existing images. It also requires
 
 * Download overcloud/undercloud images and md5 into the ``IMAGECACHE``.
   For master dev envs, you may want to pick any of these sources:
-  * [The most recent, the less stable](http://artifacts.ci.centos.org/rdo/images/master/delorean/consistent/testing/),
-    for hardcore devs.
+  * [The most recent, the less stable](http://artifacts.ci.centos.org/rdo/images/master/delorean/current-tripleo/testing/),
+    for hardcore devs (a [mirror](https://images.rdoproject.org/master/delorean/current-tripleo/testing/))
   * [The consistent, the longest upgrade path](http://artifacts.ci.centos.org/rdo/images/master/delorean/consistent/),
-    it is also the default OOOQ choice.
+    it is also the default OOOQ choice (a [mirror](https://images.rdoproject.org/master/delorean/consistent/)).
   * [The one from](https://buildlogs.centos.org/centos/7/cloud/x86_64/tripleo_images/master/delorean/) the
     [docs](http://tripleo.org/basic_deployment/basic_deployment_cli.html), for RTFM ppl.
 * Export env vars as you want them, for example:
