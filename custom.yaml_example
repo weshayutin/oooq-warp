@@ -47,6 +47,8 @@ undercloud_custom_vmlinuz: "{{ image_cache_dir }}/overcloud-full.vmlinuz"
 
 # https://review.openstack.org/#/c/447000/
 chrooted: true
+# https://review.openstack.org/#/c/460122/
+inject_instackenv: false
 
 # dev branches
 # Delorian repos
@@ -55,10 +57,12 @@ chrooted: true
 # https://review.openstack.org/#/c/450792/
 target_upgrade_version: master
 upgrade_delorean_hash: current-passed-ci
-undercloud_dlrn_repo: current-tripleo
+undercloud_dlrn_repo: current
 undercloud_update_packages:
   - openstack-tripleo-common
   - puppet-tripleo
+  - puppet-ironic
+  - puppet-mistral
   - python-tripleoclient
 # THT
 #overcloud_templates_repo: https://github.com/johndoe/tripleo-heat-templates
@@ -69,6 +73,8 @@ undercloud_update_packages:
 #undercloud_templates_path: /home/stack
 undercloud_extra_args:
   - -e {{undercloud_templates_path}}/environments/docker-mini.yaml
+  - -e {{undercloud_templates_path}}/environments/services-docker/ironic.yaml
+  - -e {{undercloud_templates_path}}/environments/services-docker/mistral.yaml
 
 # https://review.openstack.org/#/c/452275
 undercloud_docker_registry_mirror: http://mirror.regionone.tripleo-test-cloud-rh1.openstack.org:8081/registry-1.docker
