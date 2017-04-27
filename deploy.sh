@@ -72,9 +72,11 @@ function finalize {
     /usr/local/sbin/fuel-log-parse && chmod +x /usr/local/sbin/fuel-log-parse"
   echo "######## Captured errors: ########"
   with_undercloud_root \
-    'export X="D-Bus connection|WARN|[Ww]arning|DEBUG|error None|num errors=0|Dependency.*has failures|Errno (2|11[13]|104)";\
-    cd /var/log; fuel-log-parse -g -x "$X" -rfc3164; fuel-log-parse -g -x "$X"; \
-    cd /home/stack; fuel-log-parse -g -x "$X";'
+    "cd /var/log; \
+     fuel-log-parse -g -x 'D-Bus connection|WARN|[Ww]arning|DEBUG|error None|num errors=0|Dependency.*has failures|Errno (2|11[13]|104)' -rfc3164; \
+     fuel-log-parse -g -x 'D-Bus connection|WARN|[Ww]arning|DEBUG|error None|num errors=0|Dependency.*has failures|Errno (2|11[13]|104)'; \
+     cd /home/stack; \
+     fuel-log-parse -g -x 'D-Bus connection|WARN|[Ww]arning|DEBUG|error None|num errors=0|Dependency.*has failures|Errno (2|11[13]|104)';"
   set -e
 }
 
