@@ -11,6 +11,7 @@ CPU=${CPU:-800}
 MEM=${MEM:-7G}
 
 # defaults
+QUICKSTARTISH=${QUICKSTARTISH:-false}
 TEARDOWN=${TEARDOWN:-true}
 USER=${USER:-bogdando}
 OOOQE_BRANCH=${OOOQE_BRANCH:-master}
@@ -44,6 +45,7 @@ docker run -it --rm --privileged \
   -e OOOQE_BRANCH=${OOOQE_BRANCH} \
   -e OOOQE_FORK=${OOOQE_FORK} \
   -e MAKE_SNAPSHOTS=${MAKE_SNAPSHOTS} \
+  -e QUICKSTARTISH=${QUICKSTARTISH} \
   ${VMOUNT} \
   -v /var/lib/libvirt:/var/lib/libvirt \
   -v /run:/run \

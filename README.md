@@ -9,6 +9,9 @@ would do.
 It omits oooq's shell scripts and goes the ansible way,
 which is an inventory, a play and custom vars to override.
 
+If you want to deploy with quickstart.sh instead, use
+``QUICKSTARTISH=true``.
+
 ## Requirements for the host OS
 
 * Packer >= 0.12
@@ -56,7 +59,8 @@ Note, adapt those for your case or jut use existing images. It also requires
   $ export PLAY=oooq-under.yaml
   ```
   Note, setting ``TEARDOWN=false`` speeds up respinning of failed
-  deployments.
+  deployments. Also note that quickstart.sh would expect another TEARDOWN
+  values, see its docs for details.
 * Extract initrd and vmlinuz (does not work from the
   wrapping oooq-runner container):
   ```
@@ -118,7 +122,7 @@ all of the long playing oooq provisioning steps:
   Otherwise, when the container exited, you loose the updated
   inventory and ssh keys and may only start from the scratch.
 * Export ``TEARDOWN=false`` then rerun the deploy inside of the
-  container.
+  container. Or use `none`, if QUICKSTARTISH.
 
 To start from the scratch, remove existing VMs' snapshots, export or
 unset``TEARDOWN=true``, unset ``PLAY``, exit container and re-run

@@ -14,6 +14,7 @@ PLAY=${PLAY:-oooq-warp.yaml}
 WORKSPACE=${WORKSPACE:-/opt/oooq}
 LWD=${LWD:-${HOME}/.quickstart}
 MAKE_SNAPSHOTS=${MAKE_SNAPSHOTS:-true}
+QUICKSTARTISH=${QUICKSTARTISH:-false}
 
 function snap {
   set +e
@@ -28,11 +29,30 @@ function snap {
 function with_ansible {
   ANSIBLE_CONFIG=ansible.cfg \
   ansible-playbook \
-  --become-user=root \
-  --forks=$ANSIBLE_FORKS --timeout $ANSIBLE_TIMEOUT \
-  -e teardown=$TEARDOWN \
-  -e @${SCRIPTS}/custom.yaml \
-   $LOG_LEVEL $@
+    --become-user=root \
+    --forks=$ANSIBLE_FORKS --timeout $ANSIBLE_TIMEOUT \
+    -e teardown=$TEARDOWN \
+    -e @${SCRIPTS}/custom.yaml \
+    $LOG_LEVEL $@
+}
+
+function with_quickstart {
+  # TODO --nodes --config --release
+  echo pip > /tmp/foo
+  cd ${WORKSPACE}
+  cp -f $1 ${WORKSPACE}/
+  ./quckstart.sh \
+    --requirements /tmp/foo \
+    --no-clone \
+    --retain-inventory \
+    --teardown $TEARDOWN \
+    --system-site-packages \
+    --working-dir ${LWD} \
+    --playbook ${WORKSPACE}/${1##*/}
+    -e teardown=$TEARDOWN \
+    -e @${SCRIPTS}/custom.yaml \
+    $LOG_LEVEL 127.0.0.2
+  cd -
 }
 
 function with_undercloud_root {
@@ -52,7 +72,12 @@ inventory=${SCRIPTS}/inventory.ini
 
 # provision by localhost inventory and custom work dirs vars for virthost
 if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
-  with_ansible -u ${USER} -i ${inventory} ${SCRIPTS}/oooq-warp.yaml
+  if [ "$QUICKSTARTISH" = "true" ]; then
+    with_quickstart ${SCRIPTS}/oooq-warp.yaml
+  else
+    with_ansible -u ${USER} -i ${inventory} ${SCRIPTS}/oooq-warp.yaml
+  fi
+
   [ "${MAKE_SNAPSHOTS}" = "true" ] && snap undercloud ready
   # save state
   sudo cp -af ${LWD}/* ${WORKSPACE}/
@@ -89,11 +114,19 @@ if [ "${PLAY}" = "oooq-under.yaml" ]; then
   ssh -F ${LWD}/ssh.config.local.ansible undercloud touch /home/stack/undercloud_install.log
   ssh -F ${LWD}/ssh.config.local.ansible undercloud tail -fn1 /home/stack/undercloud_install.log&
   # FIXME:user and work dirs for undercloud doesn't play well with those for virthost
-  with_ansible -i ${inventory} ${SCRIPTS}/oooq-under.yaml \
-    -u stack -e ansible_user=stack \
-    -e local_working_dir=/home/stack/.quickstart \
-    -e working_dir=/home/stack
+  if [ "$QUICKSTARTISH" = "true" ]; then
+    with_quickstart ${SCRIPTS}/oooq-under.yaml
+  else
+    with_ansible -i ${inventory} ${SCRIPTS}/oooq-under.yaml \
+      -u stack -e ansible_user=stack \
+      -e local_working_dir=/home/stack/.quickstart \
+      -e working_dir=/home/stack
+  fi
   [ "${MAKE_SNAPSHOTS}" = "true" ] && snap undercloud deployed
 elif [ "${PLAY}" != "oooq-warp.yaml" ]; then
-  with_ansible -i ${inventory} ${SCRIPTS}/${PLAY}
+  if [ "$QUICKSTARTISH" = "true" ]; then
+    with_quickstart ${SCRIPTS}/${PLAY}
+  else
+    with_ansible -i ${inventory} ${SCRIPTS}/${PLAY}
+  fi
 fi

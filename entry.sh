@@ -11,6 +11,7 @@ WORKSPACE=${WORKSPACE:-/opt/oooq}
 LWD=${LWD:-~/.quickstart}
 IMAGECACHE=${IMAGECACHE:-/opt/cache}
 TEARDOWN=${TEARDOWN:-true}
+QUICKSTARTISH=${QUICKSTARTISH:-false}
 
 cd $HOME
 if [ "${VENV}" = "local" ]; then
@@ -33,7 +34,7 @@ fi
 
 # Restore the saved state from the WORKSPACE (ssh keys/setup, inventory)
 # to allow fast respinning omitting provisioning tasks
-if [ "${TEARDOWN}" != "true"  ]; then
+if [ "${TEARDOWN}" != "true" -o "${TEARDOWN}" = "none" -o "${TEARDOWN}" = "nodes" ]; then
   mkdir -p ${LWD}
   for state in 'hosts' 'id_rsa_undercloud' 'id_rsa_virt_power' \
       'id_rsa_undercloud.pub' 'id_rsa_virt_power.pub' \
@@ -46,6 +47,7 @@ fi
 sudo chown -R ${USER}: ${HOME}
 cd /tmp/oooq
 echo export PLAY=oooq-under.yaml to deploy only an undercloud
-echo export TEARDOWN=false to respin a failed provisioning
+echo export TEARDOWN=false or none to respin a failed deployment
+echo export QUICKSTARTISH=true to deploy with quickstart.sh instead of ansible-playbook
 echo Run create_env_oooq.sh to deploy
 /bin/bash
