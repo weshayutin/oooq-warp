@@ -127,6 +127,6 @@ elif [ "${PLAY}" != "oooq-warp.yaml" ]; then
   if [ "$QUICKSTARTISH" = "true" ]; then
     with_quickstart ${SCRIPTS}/${PLAY}
   else
-    with_ansible -i ${inventory} ${SCRIPTS}/${PLAY}
+    with_ansible -u ${USER} -i ${inventory} ${SCRIPTS}/${PLAY}
   fi
 fi

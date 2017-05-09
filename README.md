@@ -12,6 +12,8 @@ which is an inventory, a play and custom vars to override.
 If you want to deploy with quickstart.sh instead, use
 ``QUICKSTARTISH=true``.
 
+WIP: deploy with traas and openstack provider
+
 ## Requirements for the host OS
 
 * Packer >= 0.12
@@ -31,6 +33,8 @@ Note, adapt those for your case or jut use existing images. It also requires
 ``OOOQ_PATH`` set, see below.
 
 ## Pre-flight checks for a warp jump
+
+To start a scratch local dev env with libvirt and kvm:
 
 * Download overcloud/undercloud images and md5 into the ``IMAGECACHE``.
   For master dev envs, you may want to pick any of these sources:
@@ -139,4 +143,33 @@ to disable apparmor for libvirt and reconfigure qemu as well:
 # echo 'security_driver = "none"' >> /etc/libvirt/qemu.conf
 # sudo systemctl restart libvirt-bin
 # sudo systemctl restart qemu-kvm
+```
+
+## Traas deployment with openstack provider
+
+Copy ``oooq-traas.yaml`` as ``traas.yaml`` and update with required info, like
+the openstack cloud provider access secrets and endpoints.
+
+Start with altering vars described at the pre-flight checks steps above:
+```
+$ export PLAY=traas.yaml
+$ export TEARDOWN=false
+```
+Make sure there are no artificial undercloud node entries remaining at the
+``$LWD/hosts``. Then run
+```
+$ ./oooq-warp.sh
+$ create_env_oooq.sh
+```
+It replaces the ansible inventory with existing openstack instaces (see
+[traas](https://github.com/bogdando/traas) heat templates). Note, it places
+the given openstack cloud provider access secrets under ``$LWD/clouds.yaml`` or
+``$LWD/stackrc``. The ``$LWD`` dir is bind-mounted into the wrapper container
+and may be not ephemeral, so take care of your secrets on your own!
+
+Then deploy with custom tripleo-extras roles, like:
+```
+$ export PLAY=oooq-under.yaml
+$ /oooq-warp.sh
+$ create_env_oooq.sh
 ```
