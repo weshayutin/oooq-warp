@@ -7,7 +7,7 @@ undercloud_memory: 4096
 default_disk: 50
 default_memory: 4096
 #https://review.openstack.org/459768
-libvirt_cpu_model: host-passthrough
+libvirt_cpu_mode: host-passthrough
 
 # Accessing virthost=localhost from the wrapper container
 non_root_user: "{{ lookup('env', 'USER') }}"
