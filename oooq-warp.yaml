@@ -4,6 +4,9 @@
   any_errors_fatal: true
   gather_facts: true
   become: true
+  vars:
+    undercloud_user: stack
+    ssh_user: "{{ undercloud_user }}"
   roles:
     # https://review.openstack.org/#/c/447000/
     - { role: environment/setup, when: teardown|bool }
@@ -18,5 +21,8 @@
   # update ansible_user_dir from root, for ssh setup
   gather_facts: true
   become: false
+  vars:
+    undercloud_user: stack
+    ssh_user: "{{ undercloud_user }}"
   roles:
-    - { role: tripleo-inventory, tags: undercloud-inventory }
+    - tripleo-inventory

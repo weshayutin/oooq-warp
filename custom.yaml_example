@@ -13,9 +13,6 @@ libvirt_cpu_mode: host-passthrough
 non_root_user: "{{ lookup('env', 'USER') }}"
 non_root_group: "{{ non_root_user }}"
 ansible_user_id: "{{ non_root_user }}"
-# Accessing undercloud VM
-undercloud_user: stack
-ssh_user: "{{ undercloud_user }}"
 
 # These play well with the virthost only.
 # FIXME the undercloud will be using defaults

@@ -23,7 +23,7 @@
     #              username: fuser
     #              password: secret
     #          region: RegionOne
-    #overcloud_key: ~/.config/openstack/fuser.pem
-    #undercloud_key: ~/.config/openstack/fuser.pem
+    #overcloud_key: '{{ working_dir }}/fuser.pem'
+    #undercloud_key: '{{ working_dir }}/fuser.pem'
   roles:
     - tripleo-inventory
