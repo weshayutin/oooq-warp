@@ -1,12 +1,12 @@
 ---
-# Libvirt local deployments by quickstart
+# Non local deployments by quickstart
 - name: Install the undercloud (oooq-extras)
   hosts: undercloud
   any_errors_fatal: true
   gather_facts: true
   become: false
   vars_files:
-    - vars/undercloud-local.yaml
+    - vars/undercloud-traas.yaml
   roles:
     - undercloud-deploy
 

@@ -1,0 +1,6 @@
+undercloud_user: stack
+ssh_user: "{{ undercloud_user }}"
+non_root_user: "{{ undercloud_user }}"
+non_root_group: "{{ undercloud_user }}"
+local_working_dir: /home/{{ undercloud_user }}/.quickstart
+working_dir: /home/{{ undercloud_user }}

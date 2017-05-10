@@ -169,7 +169,7 @@ and may be not ephemeral, so take care of your secrets on your own!
 
 Then deploy with custom tripleo-extras roles, like:
 ```
-$ export PLAY=oooq-under.yaml
+$ export PLAY=oooq-traas-under.yaml
 $ /oooq-warp.sh
 $ create_env_oooq.sh
 ```

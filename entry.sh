@@ -20,7 +20,11 @@ if [ "${VENV}" = "local" ]; then
   set +u
   . /usr/bin/virtualenvwrapper.sh
   . ${HOME}/Envs/oooq/bin/activate
-  . /tmp/scripts/ssh_config
+  if [[ "$PLAY" =~ "traas" ]]; then
+    . /tmp/scripts/ssh_config_nonlocal
+  else
+    . /tmp/scripts/ssh_config
+  fi
   set -u
 
   # Hack into oooq-extras dev branch
@@ -35,13 +39,14 @@ fi
 # Restore the saved state from the WORKSPACE (ssh keys/setup, inventory)
 # to allow fast respinning omitting provisioning tasks
 if [ "${TEARDOWN}" != "true" -o "${TEARDOWN}" = "none" -o "${TEARDOWN}" = "nodes" ]; then
+  set +e
   mkdir -p ${LWD}
   for state in 'hosts' 'id_rsa_undercloud' 'id_rsa_virt_power' \
       'id_rsa_undercloud.pub' 'id_rsa_virt_power.pub' \
       'ssh.config.ansible' 'ssh.config.local.ansible'; do
     sudo cp -f "${WORKSPACE}/${state}" ${LWD}/
   done
-  echo "To access undercloud run ssh -F ${LWD}/ssh.config.local.ansible undercloud"
+  set -e
 fi
 
 sudo chown -R ${USER}: ${HOME}

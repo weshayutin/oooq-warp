@@ -1,0 +1,21 @@
+inventory: openstack
+working_dir: "{{ lookup('env', 'WORKSPACE') }}"
+local_working_dir: "{{ lookup('env', 'LWD') }}"
+
+# Define as needed
+undercloud_user: centos
+ssh_user: "{{ undercloud_user }}"
+non_root_user: "{{ undercloud_user }}"
+overcloud_user: "{{ undercloud_user }}"
+#stackrc: provide content here or use clouds_yaml, like
+#clouds_yaml: >
+#  clouds:
+#      cool-cloud:
+#          auth:
+#              auth_url: https://cool.cloud.lc/
+#              project_name: fuser
+#              username: fuser
+#              password: secret
+#          region: RegionOne
+#overcloud_key: '{{ working_dir }}/fuser.pem'
+#undercloud_key: '{{ working_dir }}/fuser.pem'

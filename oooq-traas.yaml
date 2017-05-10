@@ -6,24 +6,7 @@
   any_errors_fatal: true
   gather_facts: true
   become: false
-  vars:
-    # Define as needed
-    undercloud_user: centos
-    ssh_user: centos
-    non_root_user: centos
-    overcloud_user: centos
-    inventory: openstack
-    #stackrc: provide content here or use clouds_yaml, like
-    #clouds_yaml: >
-    #  clouds:
-    #      cool-cloud:
-    #          auth:
-    #              auth_url: https://cool.cloud.lc/
-    #              project_name: fuser
-    #              username: fuser
-    #              password: secret
-    #          region: RegionOne
-    #overcloud_key: '{{ working_dir }}/fuser.pem'
-    #undercloud_key: '{{ working_dir }}/fuser.pem'
+  vars_files:
+    - vars/inventory-traas.yaml
   roles:
     - tripleo-inventory

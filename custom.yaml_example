@@ -9,18 +9,6 @@ default_memory: 4096
 #https://review.openstack.org/459768
 libvirt_cpu_mode: host-passthrough
 
-# Accessing virthost=localhost from the wrapper container
-non_root_user: "{{ lookup('env', 'USER') }}"
-non_root_group: "{{ non_root_user }}"
-ansible_user_id: "{{ non_root_user }}"
-
-# These play well with the virthost only.
-# FIXME the undercloud will be using defaults
-working_dir: "{{ lookup('env', 'WORKSPACE') }}"
-image_cache_dir: "{{ lookup('env', 'IMAGECACHE') }}"
-local_working_dir: "{{ lookup('env', 'LWD') }}"
-image_fetch_dir: "{{ working_dir }}"
-
 # A hack for oooq to use the default pool instead of the oooq_pool
 # (w/a issue with invisible custom pools unless libvirt restarted)
 # Note, it recreates the pool with the libvirt_volume_path storage

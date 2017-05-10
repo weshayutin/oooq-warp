@@ -105,28 +105,27 @@ function finalize {
   set -e
 }
 
-trap finalize EXIT
+# FIXME Do not set finalization hooks for non local deployments
+[[ "${PLAY}" =~ "traas" ]] || trap finalize EXIT
 
 # Check undercloud node connectivity and deploy
-ansible -i ${inventory} -m ping all
+[ -f ${inventory} ] && ansible -i ${inventory} -m ping all
 if [ "${PLAY}" = "oooq-under.yaml" ]; then
+  # local deployments
   # FIXME:tail logs from the undercloud VM as install.sh hides them
   ssh -F ${LWD}/ssh.config.local.ansible undercloud touch /home/stack/undercloud_install.log
   ssh -F ${LWD}/ssh.config.local.ansible undercloud tail -fn1 /home/stack/undercloud_install.log&
-  # FIXME:user and work dirs for undercloud doesn't play well with those for virthost
   if [ "$QUICKSTARTISH" = "true" ]; then
     with_quickstart ${SCRIPTS}/oooq-under.yaml
   else
-    with_ansible -i ${inventory} ${SCRIPTS}/oooq-under.yaml \
-      -u stack -e ansible_user=stack \
-      -e local_working_dir=/home/stack/.quickstart \
-      -e working_dir=/home/stack
+    with_ansible -i ${inventory} ${SCRIPTS}/oooq-under.yaml
   fi
   [ "${MAKE_SNAPSHOTS}" = "true" ] && snap undercloud deployed
 elif [ "${PLAY}" != "oooq-warp.yaml" ]; then
+  # custom/non-local cases
   if [ "$QUICKSTARTISH" = "true" ]; then
     with_quickstart ${SCRIPTS}/${PLAY}
   else
-    with_ansible -u ${USER} -i ${inventory} ${SCRIPTS}/${PLAY}
+    with_ansible -i ${inventory} ${SCRIPTS}/${PLAY}
   fi
 fi
