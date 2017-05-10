@@ -70,8 +70,8 @@ ansible -i ${SCRIPTS}/inventory.ini -m ping all
 echo "Deploying with oooq"
 inventory=${SCRIPTS}/inventory.ini
 
-# provision by localhost inventory and custom work dirs vars for virthost
-if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
+# provision VMs, generate inventory by localhost virthost ansible node
+if [ "${TEARDOWN}" != "false" -a "${PLAY}" = "oooq-warp.yaml" ]; then
   if [ "$QUICKSTARTISH" = "true" ]; then
     with_quickstart ${SCRIPTS}/oooq-warp.yaml
   else
@@ -81,6 +81,7 @@ if [ "${TEARDOWN}" != "false" -o "${PLAY}" = "oooq-warp.yaml" ]; then
   [ "${MAKE_SNAPSHOTS}" = "true" ] && snap undercloud ready
   # save state
   sudo cp -af ${LWD}/* ${WORKSPACE}/
+  exit 0
 fi
 
 # switch to the generated inventory, if any
@@ -110,7 +111,7 @@ function finalize {
 [[ "${PLAY}" =~ "traas" ]] || trap finalize EXIT
 
 # Check undercloud node connectivity and deploy
-[ -f ${inventory} ] && ansible -i ${inventory} -m ping all
+ansible -i ${inventory} -m ping all
 if [ "${PLAY}" = "oooq-under.yaml" ]; then
   # local deployments
   # FIXME:tail logs from the undercloud VM as install.sh hides them
@@ -122,7 +123,7 @@ if [ "${PLAY}" = "oooq-under.yaml" ]; then
     with_ansible -i ${inventory} ${SCRIPTS}/oooq-under.yaml
   fi
   [ "${MAKE_SNAPSHOTS}" = "true" ] && snap undercloud deployed
-elif [ "${PLAY}" != "oooq-warp.yaml" ]; then
+else
   # custom/non-local cases
   if [ "$QUICKSTARTISH" = "true" ]; then
     with_quickstart ${SCRIPTS}/${PLAY}

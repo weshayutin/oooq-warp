@@ -37,7 +37,7 @@ if [ "${VENV}" = "local" ]; then
 fi
 
 # Restore the saved state from the WORKSPACE (ssh keys/setup, inventory)
-# to allow fast respinning omitting provisioning tasks
+# to allow fast respinning of the local environment omitting VM provisioning tasks
 if [ "${TEARDOWN}" != "true" -o "${TEARDOWN}" = "none" -o "${TEARDOWN}" = "nodes" ]; then
   set +e
   mkdir -p ${LWD}
@@ -51,8 +51,13 @@ fi
 
 sudo chown -R ${USER}: ${HOME}
 cd /tmp/oooq
-echo export PLAY=oooq-under.yaml to deploy only an undercloud
-echo export TEARDOWN=false or none to respin a failed deployment
-echo export QUICKSTARTISH=true to deploy with quickstart.sh instead of ansible-playbook
+echo Note: ansible virthost is now localhost
+echo export PLAY=oooq-warp.yaml to bootstrap local VMs and generate inventory - default choice
+echo export PLAY=oooq-under.yaml to deploy only an undercloud locally
+echo export TEARDOWN=false or none to respin a failed local deployment omitting VMs provisioning tasks
+echo =================================================================================================
+echo export PLAY=oooq-traas.yml to generate inventory for existing openstack VMs
+echo export PLAY=oooq-traas-under.yaml to deploy an undercloud on openstack
+echo export QUICKSTARTISH=true to deploy with quickstart.sh instead of ansible-playbook - TBD
 echo Run create_env_oooq.sh to deploy
 /bin/bash

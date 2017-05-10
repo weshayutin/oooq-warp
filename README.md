@@ -147,25 +147,23 @@ to disable apparmor for libvirt and reconfigure qemu as well:
 
 ## Traas deployment with openstack provider
 
-Copy ``oooq-traas.yaml`` as ``traas.yaml`` and update with required info, like
-the openstack cloud provider access secrets and endpoints.
-
-Start with altering vars described at the pre-flight checks steps above:
+Update the ``vars/inventory-traas.yaml`` vars file with required info, like
+OpenStack cloud access secrets and endpoints. Now you need to generate an
+ansible inventory for the undercloud/overcloud VMs on OpenStack (see
+also [Traas](https://github.com/bogdando/traas):
 ```
-$ export PLAY=traas.yaml
-$ export TEARDOWN=false
+$ export PLAY=oooq-traas.yaml
 ```
-Make sure there are no artificial undercloud node entries remaining at the
-``$LWD/hosts``. Then run
+Make sure there are no artificial/obsolete node entries remaining at the
+``$LWD/hosts`` (or just remove the file) and run:
 ```
 $ ./oooq-warp.sh
 $ create_env_oooq.sh
 ```
-It replaces the ansible inventory with existing openstack instaces (see
-[traas](https://github.com/bogdando/traas) heat templates). Note, it places
-the given openstack cloud provider access secrets under ``$LWD/clouds.yaml`` or
-``$LWD/stackrc``. The ``$LWD`` dir is bind-mounted into the wrapper container
-and may be not ephemeral, so take care of your secrets on your own!
+Note, it places the given openstack cloud provider access secrets under the
+``$LWD/clouds.yaml`` or ``$LWD/stackrc``. The ``$LWD`` dir is bind-mounted
+into the wrapper container and may be not ephemeral, so take care of your
+secrets to not be spreading around permanently!
 
 Then deploy with custom tripleo-extras roles, like:
 ```
