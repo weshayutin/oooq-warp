@@ -71,6 +71,8 @@ containerized_undercloud: true
 step_install_undercloud: true
 undercloud_install_script: undercloud-deploy.sh.j2
 overcloud_nodes: false
+#containerized_overcloud: true
+#node_cound: 2
 #overcloud_nodes:
 #  - name: control_0
 #    flavor: control

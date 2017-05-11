@@ -1,0 +1,43 @@
+---
+# Non local deployments by quickstart
+# Deploy the overcloud
+- name:  Prepare deployment of the undercloud
+  any_errors_fatal: true
+  hosts: undercloud
+  gather_facts: no
+  become: true
+  vars_files:
+    - vars/overcloud-traas.yaml
+  roles:
+    - overcloud-prep-config
+    - overcloud-prep-containers
+    - overcloud-prep-images
+    - overcloud-prep-flavors
+    - overcloud-prep-network
+    - { role: overcloud-ssl, when: ssl_overcloud|bool }
+
+- name:  Deploy the overcloud
+  any_errors_fatal: true
+  hosts: undercloud
+  gather_facts: yes
+  become: false
+  vars_files:
+    - vars/overcloud-traas.yaml
+  tags:
+    - overcloud-deploy
+  roles:
+    - overcloud-deploy
+
+- name: Add the overcloud nodes to the generated inventory
+  any_errors_fatal: true
+  hosts: undercloud
+  gather_facts: yes
+  vars_files:
+    - vars/overcloud-traas.yaml
+  become: false
+  tags:
+    - overcloud-deploy
+  vars:
+      inventory: all
+  roles:
+    - tripleo-inventory
