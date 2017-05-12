@@ -32,7 +32,7 @@ function with_ansible {
     --become-user=root \
     --forks=$ANSIBLE_FORKS --timeout $ANSIBLE_TIMEOUT \
     -e teardown=$TEARDOWN \
-    -e fact_caching_connection=/tmp/ \
+    -e fact_caching_connection=/tmp \
     -e @${SCRIPTS}/custom.yaml \
     $LOG_LEVEL $@
 }
