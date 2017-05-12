@@ -5,3 +5,6 @@ non_root_group: "{{ undercloud_user }}"
 #local_working_dir: /home/{{ undercloud_user }}/.quickstart
 local_working_dir: "{{ lookup('env', 'LWD') }}"
 working_dir: /home/{{ undercloud_user }}
+undercloud_vcpu: 3
+undercloud_disk: 50
+undercloud_memory: 4096

@@ -1,12 +1,5 @@
-# TODO move overcloud vars to oooq-over.yaml
-control_memory: 2048
-compute_memory: 1024
-undercloud_vcpu: 2
-undercloud_disk: 50
-undercloud_memory: 4096
 default_disk: 50
 default_memory: 4096
-#https://review.openstack.org/459768
 libvirt_cpu_mode: host-passthrough
 
 # A hack for oooq to use the default pool instead of the oooq_pool
@@ -24,15 +17,10 @@ undercloud_image_url: file://{{ image_cache_dir }}/undercloud.qcow2
 overcloud_image_url: file:///{{ image_cache_dir }}/overcloud-full.tar
 use_external_images: false
 overcloud_as_undercloud: false
-
-# https://review.openstack.org/#/c/447409/
 undercloud_use_custom_boot_images: true
 undercloud_custom_initrd: "{{ image_cache_dir }}/overcloud-full.initrd"
 undercloud_custom_vmlinuz: "{{ image_cache_dir }}/overcloud-full.vmlinuz"
-
-# https://review.openstack.org/#/c/447000/
 chrooted: true
-# https://review.openstack.org/#/c/460122/
 inject_instackenv: false
 
 # dev branches
@@ -63,10 +51,7 @@ undercloud_extra_args:
   - --keep-running
   - --timeout 60
 
-# https://review.openstack.org/#/c/452275
 undercloud_docker_registry_mirror: http://mirror.regionone.tripleo-test-cloud-rh1.openstack.org:8081/registry-1.docker
-
-# https://review.openstack.org/#/c/419040
 containerized_undercloud: true
 step_install_undercloud: true
 undercloud_install_script: undercloud-deploy.sh.j2
