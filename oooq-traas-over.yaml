@@ -11,7 +11,7 @@
   roles:
     - overcloud-prep-config
     - overcloud-prep-containers
-    - overcloud-prep-images
+    #- overcloud-prep-images
     - overcloud-prep-flavors
     - overcloud-prep-network
     - { role: overcloud-ssl, when: ssl_overcloud|bool }
