@@ -16,6 +16,8 @@ LWD=${LWD:-${HOME}/.quickstart}
 MAKE_SNAPSHOTS=${MAKE_SNAPSHOTS:-true}
 QUICKSTARTISH=${QUICKSTARTISH:-false}
 
+export ANSIBLE_CONFIG=${SCRIPTS}/ansible.cfg
+
 function snap {
   set +e
   sudo virsh suspend $1
@@ -27,12 +29,10 @@ function snap {
 }
 
 function with_ansible {
-  ANSIBLE_CONFIG=ansible.cfg \
   ansible-playbook \
     --become-user=root \
     --forks=$ANSIBLE_FORKS --timeout $ANSIBLE_TIMEOUT \
     -e teardown=$TEARDOWN \
-    -e fact_caching_connection=/tmp \
     -e @${SCRIPTS}/custom.yaml \
     $LOG_LEVEL $@
 }
