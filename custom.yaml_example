@@ -38,7 +38,7 @@ inject_instackenv: false
 # dev branches
 # Delorian repos
 #devmode: true
-#release: ocata
+release: pike
 # https://review.openstack.org/#/c/450792/
 target_upgrade_version: master
 upgrade_delorean_hash: current-passed-ci
