@@ -9,17 +9,19 @@ would do.
 It omits oooq's shell scripts and goes the ansible way,
 which is an inventory, a play and custom vars to override.
 
-If you want to deploy with quickstart.sh instead, use
+WIP: If you want to deploy with quickstart.sh instead, use
 ``QUICKSTARTISH=true``.
 
-WIP: deploy with traas and openstack provider
+WIP: It may be used to deploy with traas and openstack provider
+(see t-h-t deployed-server).
 
 ## Requirements for the host OS
 
 * Packer >= 0.12
 * Docker >= 1.13
 * Libvirt and kvm (latest perhaps) with HW access/nested
-  virtualization enabled
+  virtualization enabled, for local deployments
+* OpenStack cloud >= Ocata with Heat, for non local (traas) deployments
 
 Note, cloud providers may not allow HW enabled kvm. OOOQ
 will not work on QEMU, sorry!
@@ -89,7 +91,9 @@ Normally, the plays to be executed are: the default ``oooq-warp.yaml``
 with either provisioning steps omitted (``TEARDOWN=true``) or not, then
 the ``oooq-under.yaml`` or the given custom ``PLAY``.
 
-## Dev branches and venvs
+## Dev branches and venvs (undercloud)
+
+TODO: overcloud dev branches
 
 By default, the wrapper uses predefined python virtual env named oooq.
 Container build time, upstream dependencies are installed into it.
@@ -119,7 +123,7 @@ Inside, make sure to checkout/install required dev branches of components under
 dev/test. Then define a composable role (a heat environemnt) for the undercloud
 for the given script as well. For overcloud custom roles, see OOOQ docs.
 
-## Respinning a failed env omitting oooq provisioning steps
+## Respinning a failed local env omitting oooq provisioning steps
 
 If you want to reuse existing customized by oooq images and omit
 all of the long playing oooq provisioning steps:
@@ -133,7 +137,7 @@ To start from the scratch, remove existing VMs' snapshots, export or
 unset``TEARDOWN=true``, unset ``PLAY``, exit container and re-run
 ``./oooq-warp.sh`` and grap some cofee, it won't be ready soon.
 
-## Troubleshooting
+## Troubleshooting local envs
 
 If the undercloud VM refuses to start (permission deinied), try
 to disable apparmor for libvirt and reconfigure qemu as well:
@@ -151,7 +155,7 @@ to disable apparmor for libvirt and reconfigure qemu as well:
 Update the ``vars/inventory-traas.yaml`` vars file with required info, like
 OpenStack cloud access secrets and endpoints. Now you need to generate an
 ansible inventory for the undercloud/overcloud VMs on OpenStack (see
-also [Traas](https://github.com/bogdando/traas):
+also [Traas](https://github.com/bogdando/traas)):
 ```
 $ export PLAY=oooq-traas.yaml
 ```
@@ -159,7 +163,7 @@ Make sure there are no artificial/obsolete node entries remaining at the
 ``$LWD/hosts`` (or just remove the file) and run:
 ```
 $ ./oooq-warp.sh
-$ create_env_oooq.sh
+(oooq) create_env_oooq.sh
 ```
 Note, it places the given openstack cloud provider access secrets under the
 ``$LWD/clouds.yaml`` or ``$LWD/stackrc``. The ``$LWD`` dir is bind-mounted
@@ -168,7 +172,8 @@ secrets to not be spreading around permanently!
 
 Then deploy with custom tripleo-extras roles, like:
 ```
-$ export PLAY=oooq-traas-under.yaml
-$ /oooq-warp.sh
-$ create_env_oooq.sh
+(oooq) export PLAY=oooq-traas-under.yaml
+(oooq) create_env_oooq.sh
+(oooq) export PLAY=oooq-traas-over.yaml
+(oooq) create_env_oooq.sh
 ```
