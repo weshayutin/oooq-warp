@@ -28,9 +28,13 @@ overcloud_services:
     - OS::TripleO::Services::Ntp
     - OS::TripleO::Services::Timezone
     - OS::TripleO::Services::TripleoPackages
+    - OS::TripleO::Services::Docker
   - name: 'ComputeServices:'
     services:
     - OS::TripleO::Services::NovaCompute
+    - OS::TripleO::Services::NovaLibvirt
+    - OS::TripleO::Services::ComputeNeutronOvsAgent
+    - OS::TripleO::Services::Docker
 
 undercloud_user: centos
 ssh_user: "{{ undercloud_user }}"
