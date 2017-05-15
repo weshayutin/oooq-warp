@@ -41,7 +41,7 @@ fi
 
 # Restore the saved state from the WORKSPACE (ssh keys/setup, inventory)
 # to allow fast respinning of the local environment omitting VM provisioning tasks
-if [ "${TEARDOWN}" != "true" -o "${TEARDOWN}" = "none" -o "${TEARDOWN}" = "nodes" ]; then
+if [ "${TEARDOWN}" = "false" -o "${TEARDOWN}" = "none" ]; then
   set +e
   for state in 'hosts' 'id_rsa_undercloud' 'id_rsa_virt_power' \
       'id_rsa_undercloud.pub' 'id_rsa_virt_power.pub' \

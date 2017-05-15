@@ -60,19 +60,28 @@ function with_undercloud_root {
   ssh -F ${LWD}/ssh.config.local.ansible undercloud-root $@
 }
 
-echo "Trying to ensure bridge-nf-call-iptables is disabled..."
-br_netfilter=$(cat /proc/sys/net/bridge/bridge-nf-call-iptables)
-if [ "$br_netfilter" = "1" ]; then
-    sudo sh -c 'echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables'
-fi
+# persist generated things on exit
+function finalize {
+  sudo cp -af ${LWD}/* ${WORKSPACE}/
+}
 
 echo "Checking inventory nodes"
 ansible -i ${SCRIPTS}/inventory.ini -m ping all
 echo "Deploying with oooq"
 inventory=${SCRIPTS}/inventory.ini
 
+trap finalize EXIT
+
 # provision VMs, generate inventory by localhost virthost ansible node
-if [ "${TEARDOWN}" != "false" -a "${PLAY}" = "oooq-warp.yaml" ]; then
+if [ "${TEARDOWN}" != "false" -a "${TEARDOWN}" != "none" \
+     -a "${PLAY}" = "oooq-warp.yaml" ]; then
+
+  echo "Trying to ensure bridge-nf-call-iptables is disabled..."
+  br_netfilter=$(cat /proc/sys/net/bridge/bridge-nf-call-iptables)
+  if [ "$br_netfilter" = "1" ]; then
+    sudo sh -c 'echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables'
+  fi
+
   if [ "$QUICKSTARTISH" = "true" ]; then
     with_quickstart ${SCRIPTS}/oooq-warp.yaml
   else
@@ -80,36 +89,12 @@ if [ "${TEARDOWN}" != "false" -a "${PLAY}" = "oooq-warp.yaml" ]; then
   fi
 
   [ "${MAKE_SNAPSHOTS}" = "true" ] && snap undercloud ready
-  # save state
-  sudo cp -af ${LWD}/* ${WORKSPACE}/
   exit 0
 fi
 
 # switch to the generated inventory, if any
 inventory=${LWD}/hosts
 [ -f "${inventory}" ] || cp ${SCRIPTS}/inventory.ini ${LWD}/hosts
-
-# FIXME: rework stack as undercloud_user env var
-function finalize {
-  set +e
-  with_undercloud_root \
-    "cp -nu /root/stackrc /home/stack/ && chown stack /home/stack/stackrc"
-  with_undercloud_root \
-    "which fuel-log-parse || \
-    curl https://raw.githubusercontent.com/bogdando/fuel-log-parse/master/fuel-log-parse.sh >|\
-    /usr/local/sbin/fuel-log-parse && chmod +x /usr/local/sbin/fuel-log-parse"
-  echo "######## Captured errors: ########"
-  with_undercloud_root \
-    "cd /var/log; \
-     fuel-log-parse -g -x 'D-Bus connection|WARN|[Ww]arning|DEBUG|error None|num errors=0|Dependency.*has failures|Errno (2|11[13]|104)' -rfc3164; \
-     fuel-log-parse -g -x 'D-Bus connection|WARN|[Ww]arning|DEBUG|error None|num errors=0|Dependency.*has failures|Errno (2|11[13]|104)'; \
-     cd /home/stack; \
-     fuel-log-parse -g -x 'D-Bus connection|WARN|[Ww]arning|DEBUG|error None|num errors=0|Dependency.*has failures|Errno (2|11[13]|104)';"
-  set -e
-}
-
-# FIXME Do not set finalization hooks for non local deployments
-[[ "${PLAY}" =~ "traas" ]] || trap finalize EXIT
 
 # Check undercloud node connectivity and deploy
 ansible -i ${inventory} -m ping all
