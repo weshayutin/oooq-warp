@@ -52,7 +52,6 @@ undercloud_extra_args:
   - -e {{undercloud_templates_path}}/environments/services-docker/mistral.yaml
   - -e {{undercloud_templates_path}}/environments/debug.yaml
   - -e {{undercloud_templates_path}}/environments/config-debug.yaml
-  - --keep-running
   - --timeout 60
 
 undercloud_docker_registry_mirror: http://mirror.regionone.tripleo-test-cloud-rh1.openstack.org:8081/registry-1.docker
