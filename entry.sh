@@ -3,6 +3,7 @@
 # Prepare to run oooq via ansible
 set -eu
 export WORKON_HOME=~/Envs
+USER=${USER:-bogdando}
 OOOQE_FORK=${OOOQE_FORK:-openstack}
 OOOQE_BRANCH=${OOOQE_BRANCH:-master}
 VENV=${VENV:-local}
@@ -13,6 +14,8 @@ IMAGECACHE=${IMAGECACHE:-/opt/cache}
 TEARDOWN=${TEARDOWN:-true}
 QUICKSTARTISH=${QUICKSTARTISH:-false}
 
+sudo mkdir -p ${LWD}
+sudo chown -R ${USER}: ${LWD}
 cd $HOME
 if [ "${VENV}" = "local" ]; then
   sudo ln -sf /root/Envs .
@@ -40,7 +43,6 @@ fi
 # to allow fast respinning of the local environment omitting VM provisioning tasks
 if [ "${TEARDOWN}" != "true" -o "${TEARDOWN}" = "none" -o "${TEARDOWN}" = "nodes" ]; then
   set +e
-  mkdir -p ${LWD}
   for state in 'hosts' 'id_rsa_undercloud' 'id_rsa_virt_power' \
       'id_rsa_undercloud.pub' 'id_rsa_virt_power.pub' \
       'ssh.config.ansible' 'ssh.config.local.ansible'; do
