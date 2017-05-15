@@ -1,3 +1,37 @@
+deployed_server: true
+deploy_multinode: true
+node_cound: 2
+overcloud_nodes:
+  - name: foo-overcloud-0
+    flavor: control
+  - name: foo-overcloud-1
+    flavor: compute
+extra_args: >
+  --control-scale 1
+  --ntp-server pool.ntp.org
+  --disable-validations
+  -e {{overcloud_templates_path}}/environments/debug.yaml
+  -e {{overcloud_templates_path}}/environments/config-debug.yaml
+  #-e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml
+  -e environments/docker.yaml
+composable_services: true
+overcloud_services:
+  - name: 'ControllerServices:'
+    services:
+    - OS::TripleO::Services::Kernel
+    - OS::TripleO::Services::Keystone
+    - OS::TripleO::Services::Nova
+    - OS::TripleO::Services::RabbitMQ
+    - OS::TripleO::Services::MySQL
+    - OS::TripleO::Services::HAproxy
+    - OS::TripleO::Services::Keepalived
+    - OS::TripleO::Services::Ntp
+    - OS::TripleO::Services::Timezone
+    - OS::TripleO::Services::TripleoPackages
+  - name: 'ComputeServices:'
+    services:
+    - OS::TripleO::Services::NovaCompute
+
 undercloud_user: centos
 ssh_user: "{{ undercloud_user }}"
 non_root_user: "{{ undercloud_user }}"

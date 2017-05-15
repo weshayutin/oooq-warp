@@ -1,3 +1,4 @@
+## VIRTHOST
 default_disk: 50
 default_memory: 4096
 libvirt_cpu_mode: host-passthrough
@@ -23,13 +24,16 @@ undercloud_custom_vmlinuz: "{{ image_cache_dir }}/overcloud-full.vmlinuz"
 chrooted: true
 inject_instackenv: false
 
-# dev branches
+## DEV
 # Delorian repos
 #devmode: true
 release: pike
+overcloud_release: pike
 # https://review.openstack.org/#/c/450792/
 target_upgrade_version: master
 upgrade_delorean_hash: current-passed-ci
+
+## UNDERCLOUD
 undercloud_dlrn_repo: current
 undercloud_update_packages:
   - openstack-tripleo-common
@@ -37,10 +41,8 @@ undercloud_update_packages:
   - puppet-ironic
   - puppet-mistral
   - python-tripleoclient
+  - python-heat-agent*
 # THT
-#overcloud_templates_repo: https://github.com/johndoe/tripleo-heat-templates
-#overcloud_templates_branch: dev
-#overcloud_templates_path: /home/stack
 #undercloud_templates_repo: https://github.com/johndoes/tripleo-heat-templates
 #undercloud_templates_branch: superdev
 #undercloud_templates_path: /home/stack
@@ -48,21 +50,26 @@ undercloud_extra_args:
   - -e {{undercloud_templates_path}}/environments/docker-mini.yaml
   - -e {{undercloud_templates_path}}/environments/services-docker/ironic.yaml
   - -e {{undercloud_templates_path}}/environments/services-docker/mistral.yaml
+  - -e {{undercloud_templates_path}}/environments/debug.yaml
+  - -e {{undercloud_templates_path}}/environments/config-debug.yaml
   - --keep-running
   - --timeout 60
 
 undercloud_docker_registry_mirror: http://mirror.regionone.tripleo-test-cloud-rh1.openstack.org:8081/registry-1.docker
 containerized_undercloud: true
 step_install_undercloud: true
-undercloud_install_script: undercloud-deploy.sh.j2
-overcloud_nodes: false
-#containerized_overcloud: true
-#node_cound: 2
-#overcloud_nodes:
-#  - name: control_0
-#    flavor: control
-#  - name: compute_0
-#    flavor: compute
+#undercloud_install_script: undercloud-deploy-johndoe-dev.sh.j2
+
+## OVERCLOUD
+#overcloud_nodes: false
+#overcloud_templates_repo: https://github.com/johndoe/tripleo-heat-templates
+#overcloud_templates_branch: dev
+#overcloud_templates_path: /home/stack
+step_deploy_overcloud: true
+containerized_overcloud: true
 network_isolation: true
 enable_pacemaker: false
 overcloud_ipv6: false
+enable_swap: false
+deploy_composable_scenario: false
+#composable_scenario: scenario005-multinode.yaml

@@ -80,7 +80,8 @@ To start a scratch local dev env with libvirt and kvm:
   # cat /sys/module/kvm_intel/parameters/nested
   ```
 * Copy data vars ``custom.yaml_example`` as ``custom.yaml`` and check for
-  needed data overrides.
+  needed data overrides. Note, it contains only common vars. Use var files
+  from the ``vars`` dir for advanced configuration overrides.
 * Git checkout the wanted branch of the local OOQ repo. It will be mounted
   into the wrapper container by the given ``OOOQ_PATH``.
 
