@@ -34,7 +34,6 @@ target_upgrade_version: master
 upgrade_delorean_hash: current-passed-ci
 
 ## UNDERCLOUD
-undercloud_dlrn_repo: current
 undercloud_update_packages:
   - openstack-tripleo-common
   - puppet-tripleo

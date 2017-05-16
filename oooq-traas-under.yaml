@@ -1,5 +1,17 @@
 ---
 # Non local deployments by quickstart
+- name: Install delorian repos
+  hosts: undercloud
+  any_errors_fatal: true
+  gather_facts: false
+  vars:
+    repos:
+      - type: tripleo-repos
+        bundle: current
+        release: master
+  roles:
+    - repo-setup
+
 - name: Install the undercloud (oooq-extras)
   hosts: undercloud
   any_errors_fatal: true

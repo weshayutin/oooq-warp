@@ -1,5 +1,15 @@
 ---
 # Libvirt local deployments by quickstart
+- name: Install delorian repos (oooq-extras)
+  hosts: undercloud
+  vars:
+    repos:
+      - type: tripleo-repos
+        bundle: current
+        release: master
+  roles:
+    - repo-setup
+
 - name: Install the undercloud (oooq-extras)
   hosts: undercloud
   any_errors_fatal: true
@@ -9,15 +19,3 @@
     - vars/undercloud-local.yaml
   roles:
     - undercloud-deploy
-
-# TODO install undercloud/overcloud with containers
-# (extra_args: -e environments/docker.yaml, containerized_undercloud: true)
-# see https://review.openstack.org/#/c/419040/ for undercloud
-# Example vars:
-#  vars:
-#    extra_args: >
-#      --control-scale 3
-#      -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml
-#      #OR for containers
-#      -e environments/docker.yaml
-#      --ntp-server pool.ntp.org
