@@ -45,13 +45,10 @@ undercloud_update_packages:
 #undercloud_templates_repo: https://github.com/johndoes/tripleo-heat-templates
 #undercloud_templates_branch: superdev
 #undercloud_templates_path: /home/stack
-undercloud_extra_args:
-  - -e {{undercloud_templates_path}}/environments/docker-mini.yaml
-  - -e {{undercloud_templates_path}}/environments/services-docker/ironic.yaml
-  - -e {{undercloud_templates_path}}/environments/services-docker/mistral.yaml
-  - -e {{undercloud_templates_path}}/environments/debug.yaml
-  - -e {{undercloud_templates_path}}/environments/config-debug.yaml
-  - --timeout 60
+undercloud_extra_args: >-
+  -e {{undercloud_templates_path}}/environments/debug.yaml
+  -e {{undercloud_templates_path}}/environments/config-debug.yaml
+  --timeout 60
 
 undercloud_docker_registry_mirror: http://mirror.regionone.tripleo-test-cloud-rh1.openstack.org:8081/registry-1.docker
 containerized_undercloud: true
