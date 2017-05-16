@@ -2,11 +2,8 @@
 # Libvirt local deployments by quickstart
 - name: Install delorian repos (oooq-extras)
   hosts: undercloud
-  vars:
-    repos:
-      - type: tripleo-repos
-        bundle: current
-        release: master
+  vars_files:
+    - vars/undercloud-local.yaml
   roles:
     - repo-setup
 

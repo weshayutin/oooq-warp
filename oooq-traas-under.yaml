@@ -4,11 +4,8 @@
   hosts: undercloud
   any_errors_fatal: true
   gather_facts: false
-  vars:
-    repos:
-      - type: tripleo-repos
-        bundle: current
-        release: master
+  vars_files:
+    - vars/undercloud-traas.yaml
   roles:
     - repo-setup
 

@@ -14,13 +14,8 @@ libvirt_domain_type: kvm
 #libvirt_uri: "qemu:///system"
 enable_vnc_console: true
 
-undercloud_image_url: file://{{ image_cache_dir }}/undercloud.qcow2
-overcloud_image_url: file:///{{ image_cache_dir }}/overcloud-full.tar
 use_external_images: false
 overcloud_as_undercloud: false
-undercloud_use_custom_boot_images: true
-undercloud_custom_initrd: "{{ image_cache_dir }}/overcloud-full.initrd"
-undercloud_custom_vmlinuz: "{{ image_cache_dir }}/overcloud-full.vmlinuz"
 chrooted: true
 inject_instackenv: false
 
@@ -32,6 +27,10 @@ overcloud_release: pike
 # https://review.openstack.org/#/c/450792/
 target_upgrade_version: master
 upgrade_delorean_hash: current-passed-ci
+repos:
+  - type: tripleo-repos
+    bundle: current
+    release: master
 
 ## UNDERCLOUD
 undercloud_update_packages:
