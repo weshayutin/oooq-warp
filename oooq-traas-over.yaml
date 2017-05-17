@@ -15,16 +15,28 @@
 #    - overcloud-prep-flavors
 #    - overcloud-prep-network
 #    - { role: overcloud-ssl, when: ssl_overcloud|bool }
+- name: Run overcloud prep roles
+  hosts: undercloud
+  any_errors_fatal: true
+  vars_files:
+    - vars/overcloud-traas.yaml
+  gather_facts: no
+  become: false
+  roles:
+    - { role: overcloud-prep-images, step_overcloud_image: false, step_glance_upload: true, step_register: false }
+    - overcloud-prep-containers
 
 - name:  Deploy the overcloud (multinode)
   any_errors_fatal: true
   hosts: undercloud
-  gather_facts: yes
+  gather_facts: no
   become: false
   vars_files:
     - vars/overcloud-traas.yaml
   roles:
     - overcloud-deploy
+  environment:
+    TRIPLEO_ROOT: "{{ lookup('env','TRIPLEO_ROOT') }}"
 
 - name: Add the overcloud nodes to the generated inventory
   any_errors_fatal: true
