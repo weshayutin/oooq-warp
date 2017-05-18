@@ -11,6 +11,7 @@ CPU=${CPU:-800}
 MEM=${MEM:-7G}
 
 # defaults
+INTERACTIVE=${INTERACTIVE:-true}
 QUICKSTARTISH=${QUICKSTARTISH:-false}
 TEARDOWN=${TEARDOWN:-true}
 USER=${USER:-bogdando}
@@ -46,6 +47,7 @@ docker run -it --rm --privileged \
   -e OOOQE_FORK=${OOOQE_FORK} \
   -e MAKE_SNAPSHOTS=${MAKE_SNAPSHOTS} \
   -e QUICKSTARTISH=${QUICKSTARTISH} \
+  -e INTERACTIVE=${INTERACTIVE} \
   ${VMOUNT} \
   -v /var/lib/libvirt:/var/lib/libvirt \
   -v /run:/run \

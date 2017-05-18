@@ -13,6 +13,7 @@ LWD=${LWD:-~/.quickstart}
 IMAGECACHE=${IMAGECACHE:-/opt/cache}
 TEARDOWN=${TEARDOWN:-true}
 QUICKSTARTISH=${QUICKSTARTISH:-false}
+INTERACTIVE=${INTERACTIVE:-true}
 
 sudo mkdir -p ${LWD}
 sudo chown -R ${USER}: ${LWD}
@@ -53,13 +54,17 @@ fi
 
 sudo chown -R ${USER}: ${HOME}
 cd /tmp/oooq
-echo Note: ansible virthost is now localhost
-echo export PLAY=oooq-warp.yaml to bootstrap local VMs and generate inventory - default choice
-echo export PLAY=oooq-under.yaml to deploy only an undercloud locally
-echo export TEARDOWN=false or none to respin a failed local deployment omitting VMs provisioning tasks
-echo =================================================================================================
-echo export PLAY=oooq-traas.yml to generate inventory for existing openstack VMs
-echo export PLAY=oooq-traas-under.yaml to deploy an undercloud on openstack
-echo export QUICKSTARTISH=true to deploy with quickstart.sh instead of ansible-playbook - TBD
-echo Run create_env_oooq.sh to deploy
-/bin/bash
+if [ "$INTERACTIVE" = "true" ]; then
+  echo Note: ansible virthost is now localhost
+  echo export PLAY=oooq-warp.yaml to bootstrap local VMs and generate inventory - default choice
+  echo export PLAY=oooq-under.yaml to deploy only an undercloud locally
+  echo export TEARDOWN=false or none to respin a failed local deployment omitting VMs provisioning tasks
+  echo =================================================================================================
+  echo export PLAY=oooq-traas.yaml to generate inventory for existing openstack VMs
+  echo export PLAY=oooq-traas-under.yaml to deploy an undercloud on openstack
+  echo export QUICKSTARTISH=true to deploy with quickstart.sh instead of ansible-playbook - TBD
+  echo Run create_env_oooq.sh to deploy
+  /bin/bash
+else
+  create_env_oooq.sh
+fi

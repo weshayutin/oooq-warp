@@ -89,7 +89,9 @@ To start a scratch local dev env with libvirt and kvm:
 
 Normally, the plays to be executed are: the default ``oooq-warp.yaml``
 with either provisioning steps omitted (``TEARDOWN=true``) or not, then
-the ``oooq-under.yaml`` or the given custom ``PLAY``.
+the ``oooq-under.yaml`` or a given custom ``PLAY``, like those for Traas
+(see below).
+Use ``INTERACTIVE=false`` to start the chosen ``PLAY`` automatically.
 
 ## Dev branches and venvs (undercloud)
 
