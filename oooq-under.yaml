@@ -4,6 +4,8 @@
   hosts: undercloud
   vars_files:
     - vars/undercloud-local.yaml
+  vars:
+    - release: master # install current master delorean
   roles:
     - repo-setup
 

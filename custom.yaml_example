@@ -24,13 +24,13 @@ inject_instackenv: false
 #devmode: true
 release: pike
 overcloud_release: pike
-# https://review.openstack.org/#/c/450792/
 target_upgrade_version: master
 upgrade_delorean_hash: current-passed-ci
-repos:
-  - type: tripleo-repos
-    bundle: current
-    release: master
+# https://review.openstack.org/#/c/450792/
+#repos:
+#  - type: tripleo-repos
+#    bundle: current
+#    release: master
 
 ## UNDERCLOUD
 undercloud_update_packages:
