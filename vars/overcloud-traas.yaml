@@ -1,40 +1,83 @@
-deployed_server: true
+# reworked general multinode job configuration from oooq
 deploy_multinode: true
-node_cound: 2
+step_overcloud_image: false
+step_glance_upload: false
+step_register: false
+hypervisor_wait: false
+deployed_server: true
+
+node_cound: 1
+flavor_args: ''
 overcloud_nodes:
-  - name: foo-overcloud-0
-    flavor: control
-  - name: foo-overcloud-1
-    flavor: compute
+  - name: foo-overcloud-controller-0
+#  - name: foo-overcloud-compute-0
+
+# https://review.openstack.org/#/c/470293/
 extra_args: >
+  {{ extra_args_common }}
+  -e {{ working_dir }}/environments/network-environment.yaml
+  -e {{ overcloud_templates_path }}/environments/deployed-server-bootstrap-environment-centos.yaml
   --control-scale 1
-  --ntp-server pool.ntp.org
-  --disable-validations
-  -e {{overcloud_templates_path}}/environments/debug.yaml
-  -e {{overcloud_templates_path}}/environments/config-debug.yaml
-  #-e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml
-  -e environments/docker.yaml
+  --compute-scale 0
+
+#  -r {{overcloud_templates_path}}/deployed-server/deployed-server-roles-data.yaml
+
+# https://review.openstack.org/#/c/455719/
+# Composable deployed-server roles to override defaults in
+# tht's deployed-server/deployed-server-roles-data.yaml
+composable_roles: true
+# ServicesDefault merges services from the overcloud_services
+overcloud_roles:
+  - name: ControllerDeployedServer
+    disable_constraints: True
+    CountDefault: 1
+    tags:
+      - primary
+      - controller
+#  - name: ComputeDeployedServer
+#    disable_constraints: True
+#    CountDefault: 1
+
 composable_services: true
 overcloud_services:
-  - name: 'ControllerServices:'
+  - name: 'ControllerDeployedServerServices:'
     services:
-    - OS::TripleO::Services::Kernel
-    - OS::TripleO::Services::Keystone
-    - OS::TripleO::Services::Nova
-    - OS::TripleO::Services::RabbitMQ
-    - OS::TripleO::Services::MySQL
-    - OS::TripleO::Services::HAproxy
-    - OS::TripleO::Services::Keepalived
-    - OS::TripleO::Services::Ntp
-    - OS::TripleO::Services::Timezone
-    - OS::TripleO::Services::TripleoPackages
-    - OS::TripleO::Services::Docker
-  - name: 'ComputeServices:'
-    services:
-    - OS::TripleO::Services::NovaCompute
-    - OS::TripleO::Services::NovaLibvirt
-    - OS::TripleO::Services::ComputeNeutronOvsAgent
-    - OS::TripleO::Services::Docker
+      - OS::TripleO::Services::Kernel
+      - OS::TripleO::Services::Keystone
+      - OS::TripleO::Services::NovaApi
+      - OS::TripleO::Services::RabbitMQ
+      - OS::TripleO::Services::MySQL
+      - OS::TripleO::Services::HAproxy
+      - OS::TripleO::Services::Keepalived
+      - OS::TripleO::Services::Ntp
+      - OS::TripleO::Services::Timezone
+      - OS::TripleO::Services::Docker
+#  - name: 'ComputeDeployedServerServices:'
+#    services:
+#      - OS::TripleO::Services::NovaCompute
+#      - OS::TripleO::Services::NovaLibvirt
+#      - OS::TripleO::Services::ComputeNeutronOvsAgent
+#      - OS::TripleO::Services::Docker
+
+network_isolation: false
+# https://review.openstack.org/#/c/470293/
+undercloud_network_cidr: 192.168.0.0/24
+ctl_plane_ip: "{{ hostvars['undercloud'].undercloud_ip }}"
+undercloud_external_network_cidr: 10.0.0.1/24
+external_network_cidr: 192.168.23.0/24
+overcloud_dns_servers:
+  - "{{ undercloud_network_cidr|nthhost(2) }}"
+  - 8.8.8.8
+network_environment_args:
+  ExternalNetCidr: "{{ undercloud_external_network_cidr }}"
+  ExternalAllocationPools: >
+    [{'start': '{{ undercloud_external_network_cidr|nthhost(4) }}',
+    'end': '{{ undercloud_external_network_cidr|nthhost(250) }}'}]
+  NeutronExternalNetworkBridge: ""
+  ControlPlaneSubnetCidr: "{{ undercloud_network_cidr|ipaddr('prefix') }}"
+  ControlPlaneDefaultRoute: "{{ undercloud_network_cidr|nthhost(1) }}"
+  EC2MetadataIp: "{{ ctl_plane_ip }}"
+  DnsServers: "{{ overcloud_dns_servers }}"
 
 undercloud_user: centos
 ssh_user: "{{ undercloud_user }}"

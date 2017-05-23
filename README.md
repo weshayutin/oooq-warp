@@ -116,8 +116,6 @@ define a custom repo/branch/refspec:
 ```
 overcloud_templates_repo: https://github.com/johndoe/tripleo-heat-templates
 overcloud_templates_branch: dev
-undercloud_templates_repo: https://github.com/johndoes/tripleo-heat-templates
-undercloud_templates_branch: superdev
 undercloud_install_script: undercloud-deploy-dev.sh.j2
 ```
 Then create the custom ``undercloud-deploy-dev.sh.j2`` script.
@@ -177,5 +175,12 @@ Then deploy with custom tripleo-extras roles, like:
 (oooq) export PLAY=oooq-traas-under.yaml
 (oooq) create_env_oooq.sh
 (oooq) export PLAY=oooq-traas-over.yaml
+(oooq) export CONTROLLER_HOSTS="<private_v4_1> ... <private_v4_N>"
 (oooq) create_env_oooq.sh
 ```
+Note, the deployed-server configuration task requires a few env vars to be
+exported (see
+[deployed-server](https://docs.openstack.org/developer/tripleo-docs/advanced_deployment/deployed_server.html)
+docs for details).
+Use the ``openstack --os-cloud my-cool-cloud server list`` outputs to get
+a list of controllers/computes/etc private IPs for export.

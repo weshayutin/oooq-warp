@@ -24,6 +24,8 @@ VENV=local
 VMOUNT=""
 [ "${VENV}" != "local" ] && VMOUNT="-v ${VPATH}:/home/${USER}/Envs"
 MAKE_SNAPSHOTS=${MAKE_SNAPSHOTS:-true}
+CONTROLLER_HOSTS=${CONTROLLER_HOSTS:-false}
+COMPUTE_HOSTS=${COMPUTE_HOSTS:-false}
 
 docker run -it --rm --privileged \
   --device-read-bps=${DEV}:${IOR} \
@@ -48,6 +50,8 @@ docker run -it --rm --privileged \
   -e MAKE_SNAPSHOTS=${MAKE_SNAPSHOTS} \
   -e QUICKSTARTISH=${QUICKSTARTISH} \
   -e INTERACTIVE=${INTERACTIVE} \
+  -e CONTROLLER_HOSTS=${CONTROLLER_HOSTS} \
+  -e COMPUTE_HOSTS=${COMPUTE_HOSTS} \
   ${VMOUNT} \
   -v /var/lib/libvirt:/var/lib/libvirt \
   -v /run:/run \
